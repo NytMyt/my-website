@@ -1,0 +1,2215 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rey Fruit – Trà Trái Cây Tươi</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh}
+
+/* ===== ADMIN BAR ===== */
+.admin-bar{background:#1a1a1a;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.admin-bar span{font-size:12px;color:#aaa}
+.admin-bar strong{color:#5DCAA5}
+.admin-actions{display:flex;gap:8px;flex-wrap:wrap}
+.abtn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
+.abtn.add{background:#0F6E56;color:#fff}
+.abtn.export{background:#5DCAA5;color:#0a3d2e}
+.abtn.brand-btn{background:#2d2d2d;color:#e0e0e0;border:1px solid #444}
+
+/* ===== HERO ===== */
+.hero{background:#073d28;padding:0;text-align:center;position:relative;overflow:hidden;min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-content{position:relative;z-index:2;padding:2.2rem 1.5rem 2rem;width:100%}
+.brand-label{font-size:11px;font-weight:700;letter-spacing:3px;color:#9FE1CB;margin-bottom:8px;text-transform:uppercase;opacity:0.9}
+.hero-name{font-size:32px;font-weight:700;color:#fff;margin-bottom:5px;text-shadow:0 2px 16px rgba(0,0,0,0.3);letter-spacing:1px}
+.hero-sub{font-size:13px;color:#b8f0d8;opacity:0.95}
+.hero-divider{width:44px;height:2px;background:#5DCAA5;margin:14px auto 0;border-radius:2px}
+
+/* ===== INFO BAR ===== */
+.info-bar{display:flex;flex-wrap:wrap;background:#fff;border-bottom:1px solid #e8e8e4}
+.info-item{flex:1;min-width:180px;display:flex;align-items:center;gap:10px;padding:12px 18px;border-right:1px solid #e8e8e4}
+.info-item:last-child{border-right:none}
+.info-icon{width:32px;height:32px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.info-text{font-size:12px;line-height:1.5;color:#666}
+.info-text strong{color:#1a1a1a;font-weight:600;font-size:13px;display:block}
+
+/* ===== GRID ===== */
+.section-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:#0F6E56;text-transform:uppercase;padding:1.25rem 1rem 0.75rem;background:#fff;border-bottom:1px solid #e8e8e4}
+.container{background:#fff;padding:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1px;background:#e8e8e4}
+.card{background:#fff;display:flex;flex-direction:column;cursor:pointer;transition:transform 0.15s}
+.card:hover{transform:translateY(-2px)}
+.img-wrap{position:relative;width:100%;aspect-ratio:784/1168;background:#E1F5EE;overflow:hidden}
+.img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
+.card:hover .img-wrap img{transform:scale(1.04)}
+.placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.placeholder span{font-size:34px}
+.placeholder small{font-size:10px;color:#0F6E56;opacity:0.6}
+.edit-pill{position:absolute;bottom:6px;right:6px;background:#0F6E56;color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;opacity:0;transition:opacity 0.15s;font-family:inherit}
+.img-wrap:hover .edit-pill{opacity:1}
+.card-body{padding:9px 11px 11px;flex:1;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.card-name{font-size:12px;font-weight:500;color:#1a1a1a;line-height:1.45}
+.card-price{display:inline-block;margin-top:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:#E1F5EE;color:#0F6E56}
+.card-edit-btn{position:absolute;top:6px;right:8px;background:transparent;border:1px solid #e0e0e0;border-radius:6px;padding:2px 7px;font-size:10px;color:#bbb;cursor:pointer;font-family:inherit;opacity:0;transition:opacity 0.15s}
+.card:hover .card-edit-btn{opacity:1}
+.tap-hint{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);font-size:9px;color:#b0cfbf;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.2s}
+.card:hover .tap-hint{opacity:1}
+
+.footer{text-align:center;padding:1.25rem 1rem;background:#fff;border-top:1px solid #e8e8e4;margin-top:1px}
+.footer p{font-size:12px;color:#999}
+.footer .save-note{font-size:11px;color:#0F6E56;margin-top:4px;font-weight:500}
+
+/* ===== HEALTH TAB SLIDEUP ===== */
+.htab-wrap{position:fixed;inset:0;z-index:250;pointer-events:none}
+.htab-wrap.open{pointer-events:all}
+.htab-backdrop{position:absolute;inset:0;background:rgba(4,30,18,0.65);opacity:0;transition:opacity 0.35s;backdrop-filter:blur(4px)}
+.htab-wrap.open .htab-backdrop{opacity:1}
+.htab{position:absolute;bottom:0;left:0;right:0;max-height:92vh;border-radius:24px 24px 0 0;overflow:hidden;transform:translateY(100%);transition:transform 0.42s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column}
+.htab-wrap.open .htab{transform:translateY(0)}
+
+.htab-bg-layer{position:absolute;inset:0;z-index:0}
+.htab-bg-canvas{position:absolute;inset:0;width:100%;height:100%}
+.htab-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.22}
+
+.htab-scroll{position:relative;z-index:2;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.htab-handle{display:flex;justify-content:center;padding:12px 0 4px;cursor:pointer}
+.htab-handle-bar{width:36px;height:4px;background:rgba(255,255,255,0.35);border-radius:2px}
+
+.htab-hero{display:flex;align-items:center;gap:14px;padding:0 20px 16px}
+.htab-thumb{width:72px;height:72px;border-radius:16px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:36px;border:1.5px solid rgba(255,255,255,0.2)}
+.htab-thumb img{width:100%;height:100%;object-fit:cover}
+.htab-title-wrap{}
+.htab-drink-name{font-size:20px;font-weight:700;color:#fff;line-height:1.3;text-shadow:0 1px 8px rgba(0,0,0,0.3)}
+.htab-price-tag{display:inline-block;font-size:12px;font-weight:600;color:#5DCAA5;background:rgba(93,202,165,0.18);border:1px solid rgba(93,202,165,0.35);border-radius:20px;padding:3px 10px;margin-top:4px}
+.htab-tagline{font-size:13px;color:rgba(200,240,220,0.85);margin-top:6px;font-style:italic;line-height:1.5}
+
+.htab-section{padding:0 20px 20px}
+.htab-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5DCAA5;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.htab-section-title::after{content:'';flex:1;height:1px;background:rgba(93,202,165,0.25)}
+
+.health-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.hcard{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:12px 14px}
+.hcard-icon{font-size:22px;margin-bottom:6px}
+.hcard-label{font-size:10px;font-weight:600;letter-spacing:0.8px;text-transform:uppercase;color:rgba(160,230,200,0.7);margin-bottom:3px}
+.hcard-val{font-size:13px;font-weight:600;color:#fff;line-height:1.4}
+
+.htab-article{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:16px;padding:16px;margin-bottom:4px}
+.htab-article p{font-size:14px;color:rgba(210,245,228,0.9);line-height:1.75}
+
+.htab-tips{}
+.tip-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.07)}
+.tip-item:last-child{border-bottom:none}
+.tip-dot{width:28px;height:28px;border-radius:50%;background:rgba(93,202,165,0.2);border:1px solid rgba(93,202,165,0.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.tip-text{font-size:13px;color:rgba(210,245,228,0.85);line-height:1.6;padding-top:4px}
+
+/* edit mode inside htab */
+.htab-edit-bar{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 14px}
+.htab-ebtn{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit}
+.htab-ebtn.edit-mode{background:rgba(255,255,255,0.15);color:#fff}
+.htab-ebtn.save-mode{background:#5DCAA5;color:#073d28}
+.htab-ebtn.bg-btn{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1px solid rgba(255,255,255,0.2)}
+
+.htab-edit-panel{padding:0 20px 20px;display:none}
+.htab-edit-panel.open{display:block}
+.htab-field-group{margin-bottom:12px}
+.htab-field-label{font-size:11px;font-weight:600;color:rgba(160,230,200,0.7);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.htab-input{width:100%;font-size:13px;padding:9px 12px;border:1px solid rgba(255,255,255,0.18);border-radius:10px;background:rgba(255,255,255,0.08);color:#fff;font-family:inherit;outline:none;resize:vertical}
+.htab-input::placeholder{color:rgba(255,255,255,0.3)}
+.htab-input:focus{border-color:rgba(93,202,165,0.6)}
+
+/* ===== MODALS (admin) ===== */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.52);z-index:100;align-items:flex-start;justify-content:center;padding:40px 12px}
+.overlay.open{display:flex;overflow-y:auto}
+.modal{background:#fff;border-radius:16px;padding:1.5rem;width:min(440px,100%);margin:auto}
+.modal h3{font-size:16px;font-weight:600;color:#1a1a1a;margin-bottom:14px}
+.modal-preview{width:100%;aspect-ratio:784/1168;border-radius:8px;overflow:hidden;background:#E1F5EE;margin-bottom:12px;display:flex;align-items:center;justify-content:center;max-height:200px}
+.modal-preview img{width:100%;height:100%;object-fit:cover}
+.modal-preview .no-img{font-size:13px;color:#0F6E56;opacity:0.6}
+.drop-zone{border:2px dashed #5DCAA5;border-radius:10px;padding:1.25rem 1rem;text-align:center;cursor:pointer;background:#f0fbf7;transition:background 0.15s}
+.drop-zone:hover{background:#dcf5ed}
+.drop-zone p{font-size:12px;color:#555;margin-top:6px;line-height:1.5}
+.url-row{display:flex;gap:6px;margin-top:10px}
+.url-row input,.field-input{font-size:13px;padding:8px 10px;border:1px solid #ddd;border-radius:8px;outline:none;font-family:inherit;color:#1a1a1a;background:#fff;width:100%}
+.url-row input{flex:1;width:auto}
+.url-row input:focus,.field-input:focus{border-color:#5DCAA5}
+.modal-btns{display:flex;gap:6px;margin-top:12px;justify-content:flex-end}
+.btn{padding:7px 16px;border-radius:8px;font-size:12px;cursor:pointer;border:1px solid #ddd;background:#fff;color:#555;font-family:inherit;font-weight:500;transition:background 0.12s}
+.btn:hover{background:#f5f5f0}
+.btn.green{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.btn.green:hover{background:#085041}
+.btn.danger{color:#c0392b;border-color:#f0c0bb}
+.btn.danger:hover{background:#fff5f5}
+.btn.blue{background:#1d6fa5;color:#fff;border-color:#1d6fa5}
+.btn.blue:hover{background:#155a87}
+.field-group{margin-bottom:12px}
+.field-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.emoji-pick{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.epick{font-size:20px;cursor:pointer;padding:4px 6px;border-radius:6px;border:1.5px solid transparent;line-height:1;transition:border-color 0.1s}
+.epick:hover,.epick.sel{border-color:#5DCAA5;background:#f0fbf7}
+.export-info{background:#f0fbf7;border:1px solid #9FE1CB;border-radius:10px;padding:12px 14px;margin-bottom:14px;font-size:13px;color:#085041;line-height:1.6}
+.export-info strong{display:block;font-size:14px;margin-bottom:4px;color:#0F6E56;font-weight:600}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#0F6E56;color:#fff;padding:9px 22px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity 0.3s;pointer-events:none;z-index:400;white-space:nowrap}
+.toast.show{opacity:1}
+
+/* ===== IMAGE LIBRARY ===== */
+.img-modal-tabs{display:flex;gap:0;margin-bottom:14px;border:1px solid #e0e0e0;border-radius:10px;overflow:hidden}
+.img-tab{flex:1;padding:8px 0;font-size:12px;font-weight:600;text-align:center;cursor:pointer;background:#f5f5f0;color:#888;border:none;font-family:inherit;transition:all 0.15s}
+.img-tab.active{background:#0F6E56;color:#fff}
+.img-tab-panel{display:none}
+.img-tab-panel.active{display:block}
+
+/* Library panel */
+.lib-filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+.lib-filter{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;border:1.5px solid #e0e0e0;background:#fff;color:#777;font-family:inherit;transition:all 0.15s}
+.lib-filter.active{background:#0F6E56;color:#fff;border-color:#0F6E56}
+.lib-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;max-height:260px;overflow-y:auto;padding-right:2px}
+.lib-grid::-webkit-scrollbar{width:4px}
+.lib-grid::-webkit-scrollbar-thumb{background:#ccc;border-radius:2px}
+.lib-item{aspect-ratio:1;border-radius:8px;overflow:hidden;cursor:pointer;position:relative;border:2px solid transparent;transition:all 0.15s;background:#E1F5EE}
+.lib-item:hover{border-color:#5DCAA5;transform:scale(1.04)}
+.lib-item.selected{border-color:#0F6E56;box-shadow:0 0 0 2px #0F6E56}
+.lib-item img{width:100%;height:100%;object-fit:cover;display:block}
+.lib-item-emoji{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:28px}
+.lib-item-label{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.6));color:#fff;font-size:8px;font-weight:600;padding:4px 4px 3px;text-align:center;line-height:1.2}
+.lib-use-btn{width:100%;margin-top:10px;padding:9px;background:#0F6E56;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background 0.15s;display:none}
+.lib-use-btn.show{display:block}
+.lib-use-btn:hover{background:#085041}
+.lib-empty{text-align:center;padding:30px 0;color:#aaa;font-size:13px}
+
+/* ===== FLOATING CART BUTTON ===== */
+.cart-fab{position:fixed;bottom:24px;right:20px;z-index:200;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0F6E56,#1a9d76);color:#fff;border:none;border-radius:28px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(15,110,86,0.45);transition:all 0.25s;transform:translateY(100px);opacity:0}
+.cart-fab.show{transform:translateY(0);opacity:1}
+.cart-fab:hover{transform:scale(1.05);box-shadow:0 6px 28px rgba(15,110,86,0.55)}
+.cart-fab:active{transform:scale(0.97)}
+.cart-badge{background:#ff4757;color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px;line-height:1}
+@keyframes cpulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.cart-badge.pulse{animation:cpulse 0.35s ease}
+
+/* Add-to-cart btn on card */
+.card-order-btn{position:absolute;bottom:8px;right:8px;background:#0F6E56;color:#fff;border:none;border-radius:20px;padding:4px 10px;font-size:10px;font-weight:600;cursor:pointer;opacity:0;transition:opacity 0.15s;font-family:inherit;z-index:2}
+.card:hover .card-order-btn{opacity:1}
+
+/* ===== CART SLIDEUP ===== */
+.cart-wrap{position:fixed;inset:0;z-index:260;pointer-events:none}
+.cart-wrap.open{pointer-events:all}
+.cart-backdrop{position:absolute;inset:0;background:rgba(0,0,0,0.52);opacity:0;transition:opacity 0.3s;backdrop-filter:blur(3px)}
+.cart-wrap.open .cart-backdrop{opacity:1}
+.cart-panel{position:absolute;bottom:0;left:0;right:0;max-height:91vh;background:#fff;border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform 0.42s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column;overflow:hidden}
+.cart-wrap.open .cart-panel{transform:translateY(0)}
+.cart-handle{display:flex;justify-content:center;padding:12px 0 0;cursor:pointer;flex-shrink:0}
+.cart-handle-bar{width:36px;height:4px;background:#e0e0e0;border-radius:2px}
+.cart-header{padding:12px 20px 14px;border-bottom:1px solid #f0f0ec;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.cart-header h2{font-size:17px;font-weight:700;color:#1a1a1a}
+.cart-header-right{display:flex;align-items:center;gap:8px}
+.cart-step-indicator{font-size:11px;color:#aaa;font-weight:500}
+.cart-clear{background:transparent;border:1px solid #f0c0bb;color:#c0392b;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit}
+.cart-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:4px}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;color:#aaa;gap:10px}
+.cart-empty span{font-size:52px}
+.cart-empty p{font-size:14px}
+.cart-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #f5f5f0;transition:background 0.12s}
+.cart-item:active{background:#f9f9f9}
+.ci-img{width:52px;height:52px;border-radius:10px;overflow:hidden;background:#E1F5EE;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+.ci-img img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:13px;font-weight:600;color:#1a1a1a;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-price{font-size:12px;color:#0F6E56;font-weight:700;margin-top:2px}
+.ci-qty{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.qty-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid #e0e0e0;background:#fff;color:#555;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.12s;font-family:inherit;line-height:1}
+.qty-btn:hover{border-color:#0F6E56;color:#0F6E56;background:#f0fbf7}
+.qty-num{font-size:14px;font-weight:700;min-width:20px;text-align:center;color:#1a1a1a}
+.ci-del{background:transparent;border:none;color:#ddd;font-size:18px;cursor:pointer;padding:4px;transition:color 0.12s;line-height:1}
+.ci-del:hover{color:#e74c3c}
+
+.cart-footer{padding:16px 20px;border-top:1px solid #f0f0ec;flex-shrink:0;background:#fff}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cart-total-label{font-size:13px;color:#888}
+.cart-total-val{font-size:22px;font-weight:800;color:#0F6E56}
+.cart-note-row{margin-bottom:12px}
+.cart-note-input{width:100%;font-size:13px;padding:9px 12px;border:1px solid #e0e0e0;border-radius:10px;font-family:inherit;outline:none;resize:none;color:#1a1a1a;line-height:1.5}
+.cart-note-input:focus{border-color:#5DCAA5}
+.cart-checkout-btn{width:100%;padding:14px;background:linear-gradient(135deg,#0F6E56,#1a9d76);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.2s;box-shadow:0 4px 16px rgba(15,110,86,0.3)}
+.cart-checkout-btn:hover{box-shadow:0 6px 22px rgba(15,110,86,0.4)}
+.cart-checkout-btn:disabled{opacity:0.5;cursor:not-allowed}
+
+/* ===== ORDER FORM STEP ===== */
+.order-step{display:none}
+.order-step.active{display:block}
+.order-field-group{margin-bottom:12px}
+.order-field-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px}
+.order-input{width:100%;font-size:13px;padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-family:inherit;outline:none;color:#1a1a1a;transition:border-color 0.15s}
+.order-input:focus{border-color:#5DCAA5}
+.order-summary-box{background:#f8fffe;border:1px solid #E1F5EE;border-radius:12px;padding:12px;margin-bottom:12px;font-size:12px;color:#555;line-height:1.8}
+.order-summary-box strong{color:#0F6E56;font-size:13px}
+.step-back-btn{background:transparent;border:none;color:#888;font-size:13px;cursor:pointer;font-family:inherit;padding:4px 0;margin-bottom:12px;display:flex;align-items:center;gap:4px}
+
+/* ===== PAYMENT QR STEP ===== */
+.payment-header{text-align:center;padding:4px 0 16px}
+.payment-header h4{font-size:16px;font-weight:700;color:#1a1a1a}
+.payment-header p{font-size:12px;color:#888;margin-top:3px}
+.qr-container{background:#f8fffe;border:2px solid #E1F5EE;border-radius:16px;padding:16px;margin-bottom:14px;text-align:center}
+.qr-img-wrap{width:190px;height:190px;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid #e8e8e4;position:relative}
+.qr-img-wrap img{width:100%;height:100%;object-fit:contain}
+.qr-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:#bbb;padding:20px}
+.qr-placeholder span{font-size:48px}
+.qr-placeholder small{font-size:11px;text-align:center;line-height:1.5}
+.qr-bank-info{font-size:12px;color:#555;line-height:2}
+.qr-bank-info strong{color:#0F6E56;font-weight:700}
+.qr-amount-badge{background:linear-gradient(135deg,#E1F5EE,#d0f0e4);border:1px solid #9FE1CB;border-radius:20px;display:inline-block;padding:7px 20px;margin-top:10px;font-size:17px;font-weight:800;color:#0F6E56}
+.payment-note{background:#fffbee;border:1px solid #ffe08a;border-radius:10px;padding:11px 14px;font-size:12px;color:#7d6000;line-height:1.7;margin-bottom:14px}
+.payment-confirm-btn{width:100%;padding:14px;background:#0F6E56;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px;transition:background 0.15s}
+.payment-confirm-btn:hover{background:#085041}
+.payment-back-btn{width:100%;padding:10px;background:transparent;border:1px solid #e0e0e0;border-radius:12px;font-size:13px;color:#888;cursor:pointer;font-family:inherit;transition:background 0.12s}
+.payment-back-btn:hover{background:#f5f5f0}
+
+/* ===== SUCCESS STEP ===== */
+.success-wrap{text-align:center;padding:10px 0 8px}
+.success-icon{font-size:60px;margin-bottom:12px;display:block;animation:popIn 0.5s cubic-bezier(0.34,1.56,0.64,1)}
+@keyframes popIn{0%{transform:scale(0)}100%{transform:scale(1)}}
+.success-title{font-size:19px;font-weight:800;color:#0F6E56;margin-bottom:6px}
+.success-sub{font-size:13px;color:#888;line-height:1.6;margin-bottom:16px}
+.success-order-card{background:#f0fbf7;border:1px solid #9FE1CB;border-radius:12px;padding:14px;margin-bottom:16px;text-align:left}
+.success-order-card .soc-row{display:flex;justify-content:space-between;font-size:12px;color:#555;line-height:1.9}
+.success-order-card .soc-row strong{color:#0F6E56}
+.success-zalo-btn{width:100%;padding:13px;background:#0068ff;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;text-decoration:none;transition:background 0.15s}
+.success-zalo-btn:hover{background:#0052cc}
+.success-close-btn{width:100%;padding:11px;background:transparent;border:1px solid #e0e0e0;border-radius:12px;font-size:13px;color:#888;cursor:pointer;font-family:inherit}
+
+/* ===== ADMIN: QR + ZALO + ORDERS ===== */
+.abtn.orders{background:#1d6fa5;color:#fff}
+.settings-section{background:#f8fffe;border:1px solid #E1F5EE;border-radius:12px;padding:14px;margin-bottom:12px}
+.settings-section-title{font-size:11px;font-weight:700;color:#0F6E56;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.qr-admin-preview{width:100px;height:100px;border-radius:10px;overflow:hidden;background:#E1F5EE;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:40px;border:2px solid #9FE1CB}
+.qr-admin-preview img{width:100%;height:100%;object-fit:contain}
+.qr-upload-dz{border:2px dashed #9FE1CB;border-radius:10px;padding:12px;text-align:center;cursor:pointer;background:#fff;transition:background 0.15s}
+.qr-upload-dz:hover{background:#f0fbf7}
+.qr-upload-dz p{font-size:11px;color:#888;margin-top:4px}
+
+/* Orders list */
+.orders-tabs{display:flex;gap:0;border:1px solid #e0e0e0;border-radius:10px;overflow:hidden;margin-bottom:14px}
+.otab{flex:1;padding:7px 0;font-size:11px;font-weight:600;text-align:center;cursor:pointer;background:#f5f5f0;color:#888;border:none;font-family:inherit;transition:all 0.15s}
+.otab.active{background:#0F6E56;color:#fff}
+.orders-list{max-height:60vh;overflow-y:auto}
+.order-card{border:1px solid #e8e8e4;border-radius:12px;padding:14px;margin-bottom:10px}
+.order-card.pending{border-left:4px solid #f39c12}
+.order-card.confirmed{border-left:4px solid #0F6E56}
+.order-card.cancelled{border-left:4px solid #e74c3c;opacity:0.65}
+.oc-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.oc-code{font-size:11px;font-weight:700;color:#0F6E56;background:#E1F5EE;padding:2px 8px;border-radius:8px}
+.oc-time{font-size:10px;color:#aaa}
+.oc-customer{font-size:13px;font-weight:700;color:#1a1a1a}
+.oc-phone{font-size:12px;color:#0068ff;font-weight:600}
+.oc-items{font-size:12px;color:#666;margin:6px 0;line-height:1.7;background:#f9f9f9;border-radius:8px;padding:8px 10px}
+.oc-total{font-size:14px;font-weight:800;color:#0F6E56}
+.oc-note{font-size:11px;color:#aaa;font-style:italic;margin-top:4px}
+.oc-actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.oc-btn{padding:6px 12px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all 0.12s}
+.oc-btn.confirm{background:#0F6E56;color:#fff}
+.oc-btn.confirm:hover{background:#085041}
+.oc-btn.cancel{background:#fff;color:#e74c3c;border:1px solid #f0c0bb}
+.oc-btn.zalo{background:#0068ff;color:#fff}
+.oc-btn.zalo:hover{background:#0052cc}
+.oc-btn.del{background:#fff;color:#aaa;border:1px solid #e0e0e0}
+.status-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:8px}
+.status-badge.pending{background:#fff3cd;color:#856404}
+.status-badge.confirmed{background:#d1fae5;color:#065f46}
+.status-badge.cancelled{background:#fee2e2;color:#991b1b}
+.orders-empty{text-align:center;padding:40px 20px;color:#bbb;font-size:13px}
+.orders-empty span{font-size:40px;display:block;margin-bottom:8px}
+.orders-count-badge{background:#ff4757;color:#fff;font-size:9px;font-weight:800;min-width:16px;height:16px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;padding:0 3px;margin-left:4px;vertical-align:middle}
+</style>
+</head>
+<body>
+
+<div class="admin-bar">
+  <span>⚙️ Chế độ <strong>Quản lý menu</strong></span>
+  <div class="admin-actions">
+    <button class="abtn brand-btn" onclick="openBrandModal()">🏪 Thương hiệu</button>
+    <button class="abtn brand-btn" onclick="openQrZaloModal()">💳 QR & Zalo</button>
+    <button class="abtn orders" onclick="openOrdersModal()">📋 Đơn hàng<span class="orders-count-badge" id="ordersBadge" style="display:none">0</span></button>
+    <button class="abtn add" onclick="openAddModal()">+ Thêm món</button>
+    <button class="abtn export" onclick="openExportModal()">📤 Xuất cho khách</button>
+  </div>
+</div>
+
+<div class="hero">
+  <canvas class="hero-canvas" id="heroBg"></canvas>
+  <div class="hero-content">
+    <div class="brand-label" id="heroBrand">Menu 1 – Trà Trái Cây</div>
+    <div class="hero-name" id="heroName">Rey Fruit</div>
+    <div class="hero-sub" id="heroSub">Trà trái cây tươi mỗi ngày</div>
+    <div class="hero-divider"></div>
+  </div>
+</div>
+
+<div class="info-bar">
+  <div class="info-item">
+    <div class="info-icon">📞</div>
+    <div class="info-text"><strong id="infoPhone">0939 112 566</strong>Liên hệ đặt hàng</div>
+  </div>
+  <div class="info-item">
+    <div class="info-icon">📍</div>
+    <div class="info-text"><strong id="infoPlace">Aloha House</strong><span id="infoAddr">283/42 Đường CMT8, Hồ Chí Minh</span></div>
+  </div>
+</div>
+
+<div class="section-label">Thực đơn đặc biệt – Trà trái cây tươi</div>
+<div class="container"><div class="grid" id="grid"></div></div>
+
+<div class="footer">
+  <p>Nhấn vào thẻ để xem thông tin sức khoẻ ✦ Hover → <strong>✏ Sửa ảnh</strong> hoặc <strong>✎ Sửa</strong></p>
+  <div class="save-note">✓ Mọi thay đổi tự động lưu lại</div>
+</div>
+
+<!-- ===== HEALTH TAB ===== -->
+<div class="htab-wrap" id="htabWrap">
+  <div class="htab-backdrop" onclick="closeHealth()"></div>
+  <div class="htab" id="htab">
+    <div class="htab-bg-layer">
+      <canvas class="htab-bg-canvas" id="htabCanvas"></canvas>
+      <img class="htab-bg-img" id="htabBgImg" src="" alt="" style="display:none">
+    </div>
+    <div class="htab-scroll" id="htabScroll">
+      <div class="htab-handle" onclick="closeHealth()"><div class="htab-handle-bar"></div></div>
+
+      <div class="htab-hero">
+        <div class="htab-thumb" id="htabThumb"></div>
+        <div class="htab-title-wrap">
+          <div class="htab-drink-name" id="htabName"></div>
+          <div class="htab-price-tag" id="htabPrice"></div>
+          <div class="htab-tagline" id="htabTagline"></div>
+        </div>
+      </div>
+
+      <div class="htab-edit-bar">
+        <button class="htab-ebtn bg-btn" onclick="openBgPicker()">🖼 Đổi hình nền</button>
+        <button class="htab-ebtn edit-mode" id="htabEditBtn" onclick="toggleHealthEdit()">✎ Chỉnh nội dung</button>
+      </div>
+
+      <div class="htab-edit-panel" id="htabEditPanel">
+        <div class="htab-field-group">
+          <div class="htab-field-label">Câu slogan / tagline</div>
+          <input class="htab-input" type="text" id="heTagline" placeholder="Câu mô tả ý nghĩa...">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Nội dung sức khoẻ (đoạn văn)</div>
+          <textarea class="htab-input" id="heContent" rows="5" placeholder="Mô tả lợi ích sức khoẻ..."></textarea>
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Gợi ý 1 (icon + nội dung, cách nhau |)</div>
+          <input class="htab-input" type="text" id="heTip1" placeholder="💧 Giữ nước tốt | Bổ sung khoáng chất">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Gợi ý 2</div>
+          <input class="htab-input" type="text" id="heTip2" placeholder="🌿 Chất xơ cao | Tốt cho tiêu hoá">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Gợi ý 3</div>
+          <input class="htab-input" type="text" id="heTip3" placeholder="✨ Vitamin C | Tăng sức đề kháng">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Thẻ thông tin 1 (icon | tiêu đề | giá trị)</div>
+          <input class="htab-input" type="text" id="heCard1" placeholder="💊 | Vitamin | C, B6, Kali">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Thẻ thông tin 2</div>
+          <input class="htab-input" type="text" id="heCard2" placeholder="🔥 | Calo | ~45 kcal/ly">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Thẻ thông tin 3</div>
+          <input class="htab-input" type="text" id="heCard3" placeholder="💧 | Độ ngọt | Tự nhiên">
+        </div>
+        <div class="htab-field-group">
+          <div class="htab-field-label">Thẻ thông tin 4</div>
+          <input class="htab-input" type="text" id="heCard4" placeholder="🌡 | Nhiệt độ | Lạnh / Nóng">
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;padding-bottom:4px">
+          <button class="htab-ebtn edit-mode" onclick="cancelHealthEdit()">Huỷ</button>
+          <button class="htab-ebtn save-mode" onclick="saveHealthContent()">💾 Lưu</button>
+        </div>
+      </div>
+
+      <div id="htabViewMode">
+        <div class="htab-section">
+          <div class="htab-section-title">🌿 Lợi ích sức khoẻ</div>
+          <div class="htab-article"><p id="htabContent"></p></div>
+        </div>
+        <div class="htab-section">
+          <div class="htab-section-title">✨ Điểm nổi bật</div>
+          <div class="health-cards" id="htabCards"></div>
+        </div>
+        <div class="htab-section">
+          <div class="htab-section-title">💡 Gợi ý uống</div>
+          <div class="htab-tips" id="htabTips"></div>
+        </div>
+      </div>
+      <div style="height:32px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- bg picker -->
+<div class="overlay" id="overlayBgPick" style="z-index:300">
+  <div class="modal">
+    <h3>🖼 Thay hình nền tab sức khoẻ</h3>
+    <div class="drop-zone" id="bgDropZone" onclick="document.getElementById('bgFi').click()">
+      <span style="font-size:26px">🌿</span>
+      <p>Nhấn để chọn ảnh từ máy tính<br><span style="color:#aaa;font-size:11px">Ảnh sẽ làm nền mờ phía sau</span></p>
+    </div>
+    <div class="url-row">
+      <input type="text" id="bgUrlIn" placeholder="Hoặc dán URL hình ảnh...">
+      <button class="btn green" onclick="applyBgUrl()">Dùng URL</button>
+    </div>
+    <div class="modal-btns">
+      <button class="btn danger" onclick="removeBg()">Xoá hình nền</button>
+      <button class="btn" onclick="closeBgPicker()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Sửa ảnh món — có thư viện -->
+<div class="overlay" id="overlayImg">
+  <div class="modal">
+    <h3>🖼️ <span id="imgModalTitle">Thay ảnh</span></h3>
+    <div class="modal-preview" id="preview"><span class="no-img">Chưa có ảnh</span></div>
+
+    <!-- Tabs -->
+    <div class="img-modal-tabs">
+      <button class="img-tab active" onclick="switchImgTab('upload')">📁 Tải lên</button>
+      <button class="img-tab" onclick="switchImgTab('library')">🖼 Thư viện ảnh</button>
+      <button class="img-tab" onclick="switchImgTab('url')">🔗 URL</button>
+    </div>
+
+    <!-- Tab: Upload -->
+    <div class="img-tab-panel active" id="tabUpload">
+      <div class="drop-zone" id="dropZone" onclick="document.getElementById('fi').click()">
+        <span style="font-size:26px">🖼️</span>
+        <p>Nhấn để chọn ảnh từ máy tính<br><span style="color:#aaa;font-size:11px">hoặc kéo thả ảnh vào đây</span></p>
+      </div>
+    </div>
+
+    <!-- Tab: Library -->
+    <div class="img-tab-panel" id="tabLibrary">
+      <div class="lib-filters" id="libFilters"></div>
+      <div class="lib-grid" id="libGrid"></div>
+      <button class="lib-use-btn" id="libUseBtn" onclick="applyLibraryImg()">✓ Dùng ảnh này</button>
+    </div>
+
+    <!-- Tab: URL -->
+    <div class="img-tab-panel" id="tabUrl">
+      <div class="url-row" style="margin-top:0">
+        <input type="text" id="urlIn" placeholder="Dán URL hình ảnh...">
+        <button class="btn green" onclick="applyUrl()">Dùng URL</button>
+      </div>
+      <p style="font-size:11px;color:#aaa;margin-top:8px">Hỗ trợ: JPG, PNG, WebP từ bất kỳ URL công khai nào</p>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn danger" onclick="resetImg()">Xoá ảnh</button>
+      <button class="btn" onclick="closeImgModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Sửa tên/giá/nội dung -->
+<div class="overlay" id="overlayEdit">
+  <div class="modal">
+    <h3>✎ Sửa thông tin món</h3>
+    <div class="field-group">
+      <div class="field-label">Tên thức uống</div>
+      <input class="field-input" type="text" id="editName" placeholder="Tên món...">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Giá</div>
+      <input class="field-input" type="text" id="editPrice" placeholder="VD: 30K" style="width:130px">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Câu slogan / tagline</div>
+      <textarea class="field-input" id="editQuote" placeholder="Câu mô tả ý nghĩa..." rows="2" style="resize:vertical;line-height:1.5"></textarea>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Icon (khi chưa có ảnh)</div>
+      <div class="emoji-pick" id="emojiPick"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn danger" onclick="deleteItem()">Xoá món</button>
+      <button class="btn" onclick="closeEditModal()">Huỷ</button>
+      <button class="btn green" onclick="saveItemEdit()">Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Thêm món -->
+<div class="overlay" id="overlayAdd">
+  <div class="modal">
+    <h3>+ Thêm món mới</h3>
+    <div class="field-group">
+      <div class="field-label">Tên thức uống</div>
+      <input class="field-input" type="text" id="addName" placeholder="Tên món...">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Giá</div>
+      <input class="field-input" type="text" id="addPrice" placeholder="VD: 30K" style="width:130px">
+    </div>
+    <div class="field-group">
+      <div class="field-label">Câu slogan / tagline</div>
+      <textarea class="field-input" id="addQuote" placeholder="Câu mô tả ý nghĩa..." rows="2" style="resize:vertical;line-height:1.5"></textarea>
+    </div>
+    <div class="field-group">
+      <div class="field-label">Icon đại diện</div>
+      <div class="emoji-pick" id="emojiPickAdd"></div>
+    </div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeAddModal()">Huỷ</button>
+      <button class="btn green" onclick="saveNewItem()">Thêm vào menu</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Thương hiệu -->
+<div class="overlay" id="overlayBrand">
+  <div class="modal">
+    <h3>🏪 Cài đặt thương hiệu</h3>
+    <div class="field-group"><div class="field-label">Tên thương hiệu</div><input class="field-input" type="text" id="bName" placeholder="VD: Rey Fruit"></div>
+    <div class="field-group"><div class="field-label">Slogan</div><input class="field-input" type="text" id="bSub" placeholder="VD: Trà trái cây tươi mỗi ngày"></div>
+    <div class="field-group"><div class="field-label">Nhãn menu</div><input class="field-input" type="text" id="bBrand" placeholder="VD: Menu 1 – Trà Trái Cây"></div>
+    <div class="field-group"><div class="field-label">Số điện thoại</div><input class="field-input" type="text" id="bPhone" placeholder="VD: 0939 112 566"></div>
+    <div class="field-group"><div class="field-label">Tên địa điểm</div><input class="field-input" type="text" id="bPlace" placeholder="VD: Aloha House"></div>
+    <div class="field-group"><div class="field-label">Địa chỉ đầy đủ</div><input class="field-input" type="text" id="bAddr" placeholder="VD: 283/42 Đường CMT8, Hồ Chí Minh"></div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeBrandModal()">Huỷ</button>
+      <button class="btn green" onclick="saveBrand()">💾 Lưu</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Xuất khách -->
+<div class="overlay" id="overlayExport">
+  <div class="modal">
+    <h3>📤 Xuất menu cho khách</h3>
+    <div class="export-info"><strong>Bản dành cho khách hàng</strong>File HTML đầy đủ tính năng xem sức khoẻ — không có nút chỉnh sửa, không có thanh quản lý.</div>
+    <div class="modal-btns">
+      <button class="btn" onclick="closeExportModal()">Đóng</button>
+      <button class="btn blue" onclick="exportReadonly()">⬇ Tải file cho khách</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FLOATING CART BUTTON ===== -->
+<button class="cart-fab" id="cartFab" onclick="openCart()">
+  🛒 Giỏ hàng &nbsp;<span class="cart-badge" id="cartBadge">0</span>
+</button>
+
+<!-- ===== CART / ORDER SLIDEUP ===== -->
+<div class="cart-wrap" id="cartWrap">
+  <div class="cart-backdrop" onclick="closeCart()"></div>
+  <div class="cart-panel">
+    <div class="cart-handle" onclick="closeCart()"><div class="cart-handle-bar"></div></div>
+    <div class="cart-header">
+      <div>
+        <h2 id="cartTitle">🛒 Giỏ hàng</h2>
+        <div class="cart-step-indicator" id="cartStepLabel">Chọn món và đặt hàng</div>
+      </div>
+      <div class="cart-header-right">
+        <button class="cart-clear" id="cartClearBtn" onclick="clearCart()">Xoá tất cả</button>
+      </div>
+    </div>
+
+    <div class="cart-body" id="cartBody">
+      <!-- Step 1: Items list -->
+      <div class="order-step active" id="stepItems"></div>
+
+      <!-- Step 2: Customer info -->
+      <div class="order-step" id="stepInfo" style="padding:16px 20px">
+        <button class="step-back-btn" onclick="goStep(1)">← Quay lại giỏ hàng</button>
+        <div class="order-summary-box" id="orderSummaryBox"></div>
+        <div class="order-field-group">
+          <div class="order-field-label">Họ và tên *</div>
+          <input class="order-input" type="text" id="custName" placeholder="VD: Nguyễn Văn A">
+        </div>
+        <div class="order-field-group">
+          <div class="order-field-label">Số điện thoại *</div>
+          <input class="order-input" type="tel" id="custPhone" placeholder="VD: 0901234567">
+        </div>
+        <div class="order-field-group">
+          <div class="order-field-label">Ghi chú (tuỳ chọn)</div>
+          <textarea class="order-input" id="custNote" rows="2" placeholder="VD: Ít đường, không đá..."></textarea>
+        </div>
+      </div>
+
+      <!-- Step 3: Payment QR -->
+      <div class="order-step" id="stepPayment" style="padding:16px 20px">
+        <button class="step-back-btn" onclick="goStep(2)">← Quay lại thông tin</button>
+        <div class="payment-header">
+          <h4>💳 Thanh toán chuyển khoản</h4>
+          <p>Quét mã QR hoặc chuyển khoản thủ công</p>
+        </div>
+        <div class="qr-container">
+          <div class="qr-img-wrap" id="qrImgWrap">
+            <div class="qr-placeholder"><span>📱</span><small>Chưa có mã QR<br>Admin cần cài đặt QR thanh toán</small></div>
+          </div>
+          <div class="qr-bank-info" id="qrBankInfo"></div>
+          <div class="qr-amount-badge" id="qrAmountBadge">0đ</div>
+        </div>
+        <div class="payment-note">
+          ⚠️ Sau khi chuyển khoản, nhấn <strong>"Tôi đã chuyển khoản"</strong> bên dưới. Đơn hàng sẽ được xác nhận sau khi admin kiểm tra và nhắn Zalo cho bạn.
+        </div>
+      </div>
+
+      <!-- Step 4: Success -->
+      <div class="order-step" id="stepSuccess" style="padding:16px 20px">
+        <div class="success-wrap">
+          <span class="success-icon">🎉</span>
+          <div class="success-title">Đặt hàng thành công!</div>
+          <div class="success-sub">Tin nhắn đã được gửi tự động đến Zalo của <strong id="successBrand">Rey Fruit</strong>. 🎉<br>Đơn sẽ được xác nhận sau khi nhận được thanh toán.</div>
+          <div class="success-order-card" id="successOrderCard"></div>
+          <a class="success-zalo-btn" id="successZaloBtn" href="#" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.84 1.36 5.37 3.5 7.08L4.5 22l4.26-1.38C9.96 21.17 10.96 21.4 12 21.4c5.52 0 10-4.03 10-9.4S17.52 2 12 2z"/></svg>
+            Hỏi thêm qua Zalo
+          </a>
+          <button class="success-close-btn" onclick="closeCart();resetOrder()">Đóng & đặt thêm</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-footer" id="cartFooter">
+      <div id="footerStep1">
+        <div class="cart-total-row">
+          <span class="cart-total-label">Tổng cộng</span>
+          <span class="cart-total-val" id="cartTotal">0đ</span>
+        </div>
+        <button class="cart-checkout-btn" id="checkoutBtn" onclick="goStep(2)">Tiếp tục đặt hàng →</button>
+      </div>
+      <div id="footerStep2" style="display:none">
+        <button class="cart-checkout-btn" onclick="submitToPayment()">Xem QR thanh toán →</button>
+      </div>
+      <div id="footerStep3" style="display:none">
+        <button class="payment-confirm-btn" onclick="confirmOrder()">✅ Tôi đã chuyển khoản</button>
+        <button class="payment-back-btn" onclick="goStep(2)">← Quay lại</button>
+      </div>
+      <div id="footerStep4" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: QR & Zalo Settings -->
+<div class="overlay" id="overlayQrZalo">
+  <div class="modal">
+    <h3>💳 Cài đặt QR & Zalo</h3>
+
+    <div class="settings-section">
+      <div class="settings-section-title">📱 Mã QR Thanh Toán</div>
+      <div class="qr-admin-preview" id="qrAdminPreview">📱</div>
+      <div class="qr-upload-dz" onclick="document.getElementById('qrFi').click()">
+        <span style="font-size:22px">🔄</span>
+        <p>Nhấn để tải lên ảnh QR của bạn<br><span style="color:#aaa;font-size:10px">JPG/PNG từ ngân hàng, MoMo, ZaloPay...</span></p>
+      </div>
+      <div class="url-row" style="margin-top:8px">
+        <input type="text" class="field-input" id="qrUrlInput" placeholder="Hoặc dán URL ảnh QR...">
+        <button class="btn green" onclick="applyQrUrl()">Dùng</button>
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">🏦 Thông tin tài khoản</div>
+      <div class="field-group">
+        <div class="field-label">Tên ngân hàng / ví</div>
+        <input class="field-input" type="text" id="bankName" placeholder="VD: Vietcombank / MoMo / ZaloPay">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Số tài khoản / SĐT</div>
+        <input class="field-input" type="text" id="bankNumber" placeholder="VD: 1234567890">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Tên chủ tài khoản</div>
+        <input class="field-input" type="text" id="bankOwner" placeholder="VD: NGUYEN VAN A">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Nội dung chuyển khoản mẫu</div>
+        <input class="field-input" type="text" id="bankContent" placeholder="VD: REY FRUIT [Tên khách]">
+      </div>
+    </div>
+
+    <div class="settings-section">
+      <div class="settings-section-title">💬 Zalo nhận đơn hàng</div>
+      <div class="field-group">
+        <div class="field-label">Số điện thoại Zalo của bạn</div>
+        <input class="field-input" type="tel" id="zaloPhone" placeholder="VD: 0939112566">
+      </div>
+      <div class="field-group">
+        <div class="field-label">Tin nhắn mẫu gửi khách (tuỳ chọn)</div>
+        <textarea class="field-input" id="zaloMsgTemplate" rows="2" placeholder="VD: Cảm ơn bạn đã đặt hàng! Đơn của bạn đã được xác nhận." style="resize:vertical;line-height:1.5"></textarea>
+      </div>
+      <div style="background:#e8f4fd;border-radius:8px;padding:10px;font-size:11px;color:#1a5a8a;line-height:1.6">
+        💡 Khi khách đặt hàng, hệ thống sẽ tự động tạo link Zalo có kèm thông tin đơn hàng để khách nhắn cho bạn xác nhận.
+      </div>
+    </div>
+
+    <div class="modal-btns">
+      <button class="btn" onclick="closeQrZaloModal()">Huỷ</button>
+      <button class="btn green" onclick="saveQrZalo()">💾 Lưu cài đặt</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: Quản lý đơn hàng -->
+<div class="overlay" id="overlayOrders">
+  <div class="modal" style="width:min(520px,100%)">
+    <h3>📋 Quản lý đơn hàng</h3>
+    <div class="orders-tabs">
+      <button class="otab active" onclick="filterOrders('all',this)">Tất cả</button>
+      <button class="otab" onclick="filterOrders('pending',this)">⏳ Chờ xác nhận</button>
+      <button class="otab" onclick="filterOrders('confirmed',this)">✅ Đã xác nhận</button>
+      <button class="otab" onclick="filterOrders('cancelled',this)">❌ Đã huỷ</button>
+    </div>
+    <div class="orders-list" id="ordersList"></div>
+    <div class="modal-btns">
+      <button class="btn danger" onclick="clearAllOrders()">🗑 Xoá tất cả đơn</button>
+      <button class="btn" onclick="closeOrdersModal()">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="qrFi" style="display:none" accept="image/*">
+<input type="file" id="fi" style="display:none" accept="image/*">
+<input type="file" id="bgFi" style="display:none" accept="image/*">
+<div class="toast" id="toast"></div>
+
+<script>
+// ===== IMAGE LIBRARY DATA =====
+const IMAGE_LIBRARY = [
+  { id:'l1', cat:'Trà trái cây', label:'Trà trái cây nhiệt đới', url:'https://images.unsplash.com/photo-1544145945-f90425340c7e?w=400&q=80' },
+  { id:'l2', cat:'Trà trái cây', label:'Trà đào lạnh', url:'https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=400&q=80' },
+  { id:'l3', cat:'Trà trái cây', label:'Nước trái cây đỏ', url:'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?w=400&q=80' },
+  { id:'l4', cat:'Trà trái cây', label:'Sinh tố xoài', url:'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=400&q=80' },
+  { id:'l5', cat:'Trà trái cây', label:'Nước chanh leo', url:'https://images.unsplash.com/photo-1625031527987-e2cbcc5785c8?w=400&q=80' },
+  { id:'l6', cat:'Trà trái cây', label:'Trà dâu tây', url:'https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?w=400&q=80' },
+  { id:'l7', cat:'Trà trái cây', label:'Nước dưa hấu', url:'https://images.unsplash.com/photo-1559181567-c3190ca9959b?w=400&q=80' },
+  { id:'l8', cat:'Trà trái cây', label:'Trà chanh bạc hà', url:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80' },
+  { id:'l9', cat:'Trà trái cây', label:'Nước cam tươi', url:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80' },
+  { id:'l10', cat:'Trà trái cây', label:'Trà vải đỏ', url:'https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400&q=80' },
+  { id:'l11', cat:'Trà trái cây', label:'Nước kiwi xanh', url:'https://images.unsplash.com/photo-1585909695284-32d2985ac9c0?w=400&q=80' },
+  { id:'l12', cat:'Trà trái cây', label:'Nước ép hỗn hợp', url:'https://images.unsplash.com/photo-1546173159-315724a31696?w=400&q=80' },
+  { id:'c1', cat:'Cam & Chanh', label:'Cam vắt tươi', url:'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=400&q=80' },
+  { id:'c2', cat:'Cam & Chanh', label:'Nước cam nhiệt đới', url:'https://images.unsplash.com/photo-1604045741834-45c3d9e2b017?w=400&q=80' },
+  { id:'c3', cat:'Cam & Chanh', label:'Chanh leo tươi', url:'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?w=400&q=80' },
+  { id:'c4', cat:'Cam & Chanh', label:'Chanh tắc đá', url:'https://images.unsplash.com/photo-1603569283847-aa295f0d016a?w=400&q=80' },
+  { id:'c5', cat:'Cam & Chanh', label:'Lemonade bạc hà', url:'https://images.unsplash.com/photo-1587049633312-d628ae50a8ae?w=400&q=80' },
+  { id:'c6', cat:'Cam & Chanh', label:'Orange juice glass', url:'https://images.unsplash.com/photo-1582979512210-99b6a53386f9?w=400&q=80' },
+  { id:'b1', cat:'Dâu & Berry', label:'Sinh tố dâu tây', url:'https://images.unsplash.com/photo-1505252585461-04db1eb84625?w=400&q=80' },
+  { id:'b2', cat:'Dâu & Berry', label:'Nước dâu tằm', url:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&q=80' },
+  { id:'b3', cat:'Dâu & Berry', label:'Mixed berry juice', url:'https://images.unsplash.com/photo-1600271886742-f049cd451bba?w=400&q=80' },
+  { id:'b4', cat:'Dâu & Berry', label:'Dâu tây kem', url:'https://images.unsplash.com/photo-1542444459-3bc0aa697b9a?w=400&q=80' },
+  { id:'b5', cat:'Dâu & Berry', label:'Blue berry shake', url:'https://images.unsplash.com/photo-1571950006418-28583ee5e4e4?w=400&q=80' },
+  { id:'b6', cat:'Dâu & Berry', label:'Dâu tây tươi mát', url:'https://images.unsplash.com/photo-1553530979-7ee52a2670c4?w=400&q=80' },
+  { id:'m1', cat:'Xoài & Nhiệt đới', label:'Sinh tố xoài vàng', url:'https://images.unsplash.com/photo-1546548970-71785318a17b?w=400&q=80' },
+  { id:'m2', cat:'Xoài & Nhiệt đới', label:'Nước dừa tươi', url:'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?w=400&q=80' },
+  { id:'m3', cat:'Xoài & Nhiệt đới', label:'Dứa xoài lạnh', url:'https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=400&q=80' },
+  { id:'m4', cat:'Xoài & Nhiệt đới', label:'Chanh dây vàng', url:'https://images.unsplash.com/photo-1625031527987-e2cbcc5785c8?w=400&q=80' },
+  { id:'m5', cat:'Xoài & Nhiệt đới', label:'Tropical punch', url:'https://images.unsplash.com/photo-1519671482749-fd09be7ccebf?w=400&q=80' },
+  { id:'m6', cat:'Xoài & Nhiệt đới', label:'Mango smoothie', url:'https://images.unsplash.com/photo-1553530979-212b10f31e8d?w=400&q=80' },
+  { id:'t1', cat:'Trà & Macchiato', label:'Trà sữa trân châu', url:'https://images.unsplash.com/photo-1558857563-b371033873b8?w=400&q=80' },
+  { id:'t2', cat:'Trà & Macchiato', label:'Trà xanh matcha', url:'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=400&q=80' },
+  { id:'t3', cat:'Trà & Macchiato', label:'Trà đen lạnh', url:'https://images.unsplash.com/photo-1556679343-c7306c1976bc?w=400&q=80' },
+  { id:'t4', cat:'Trà & Macchiato', label:'Hoa lài trà', url:'https://images.unsplash.com/photo-1556909211-36987daf7b4d?w=400&q=80' },
+  { id:'t5', cat:'Trà & Macchiato', label:'Macchiato kem', url:'https://images.unsplash.com/photo-1517701604599-bb29b565090c?w=400&q=80' },
+  { id:'t6', cat:'Trà & Macchiato', label:'Cold brew trà', url:'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400&q=80' },
+  { id:'s1', cat:'Sinh tố', label:'Sinh tố xanh', url:'https://images.unsplash.com/photo-1610970881699-44a5587cabec?w=400&q=80' },
+  { id:'s2', cat:'Sinh tố', label:'Smoothie hồng', url:'https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=400&q=80' },
+  { id:'s3', cat:'Sinh tố', label:'Sinh tố bơ', url:'https://images.unsplash.com/photo-1490474418585-ba9bad8fd0ea?w=400&q=80' },
+  { id:'s4', cat:'Sinh tố', label:'Sinh tố chuối', url:'https://images.unsplash.com/photo-1500630417200-63156e226754?w=400&q=80' },
+  { id:'s5', cat:'Sinh tố', label:'Green smoothie bowl', url:'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80' },
+  { id:'s6', cat:'Sinh tố', label:'Smoothie việt quất', url:'https://images.unsplash.com/photo-1638437447450-4082d5b85aeb?w=400&q=80' },
+  { id:'j1', cat:'Nước ép', label:'Nước ép cà rốt', url:'https://images.unsplash.com/photo-1622597467836-f3285f2131b8?w=400&q=80' },
+  { id:'j2', cat:'Nước ép', label:'Ép táo xanh', url:'https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=400&q=80' },
+  { id:'j3', cat:'Nước ép', label:'Nước ép củ dền', url:'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&q=80' },
+  { id:'j4', cat:'Nước ép', label:'Nước ép thơm', url:'https://images.unsplash.com/photo-1618897996318-5a901fa0a58b?w=400&q=80' },
+  { id:'j5', cat:'Nước ép', label:'Mixed juice tươi', url:'https://images.unsplash.com/photo-1613478223719-2ab802602423?w=400&q=80' },
+  { id:'j6', cat:'Nước ép', label:'Nước ép nho', url:'https://images.unsplash.com/photo-1423697664073-0e7a0c8f6a95?w=400&q=80' },
+];
+
+const LIB_CATS = ['Tất cả', 'Trà trái cây', 'Cam & Chanh', 'Dâu & Berry', 'Xoài & Nhiệt đới', 'Trà & Macchiato', 'Sinh tố', 'Nước ép'];
+
+// ===== CORE DATA =====
+const EMOJIS=["🍃","🍑","🌸","🍓","🍈","🍋","🍏","🥭","🍎","🍇","🥝","🍊","🌕","🥥","🍵","🧃","🫖","🍹","🌹","🌻"];
+const KEY_ITEMS="rf_items_v3",KEY_IMGS="rf_imgs_v3",KEY_BRAND="rf_brand_v2",KEY_HEALTH="rf_health_v1",KEY_BGIMGS="rf_bgimgs_v1";
+const DEFAULT_BRAND={name:"Rey Fruit",sub:"Trà trái cây tươi mỗi ngày",brand:"Menu 1 – Trà Trái Cây",phone:"0939 112 566",place:"Aloha House",addr:"283/42 Đường CMT8, Hồ Chí Minh"};
+const DEFAULT_HEALTH=[
+  {content:"Trà trái cây nhiệt đới là sự kết hợp tuyệt vời của nhiều loại vitamin từ thiên nhiên. Uống đều đặn giúp tăng cường hệ miễn dịch, bổ sung chất chống oxy hoá và làm chậm quá trình lão hoá tế bào.",cards:["🍊|Vitamin|C, A, E","🔥|Calo|~50 kcal/ly","💧|Giải nhiệt|Rất tốt","🌿|Chất xơ|Tự nhiên"],tips:["🌞|Uống vào buổi sáng|Giúp khởi động hệ tiêu hoá và tăng năng lượng cả ngày","💪|Tốt cho miễn dịch|Hàm lượng vitamin C cao giúp chống cảm cúm hiệu quả","🧊|Nên uống lạnh|Giữ nguyên hương vị tươi mát và các enzyme tự nhiên"]},
+  {content:"Đào kết hợp cam và sả tạo nên hương vị thanh mát đặc trưng. Đào giàu vitamin A, C và chất chống oxy hoá. Sả có tác dụng kháng khuẩn, hỗ trợ tiêu hoá và giảm căng thẳng hiệu quả.",cards:["🍑|Vitamin|A, C, Kali","💊|Kháng khuẩn|Từ sả tự nhiên","😌|Thư giãn|Tinh dầu sả","🔥|Calo|~45 kcal/ly"],tips:["🌿|Tinh dầu sả|Có tác dụng giảm lo âu và cải thiện giấc ngủ","🍑|Đào tươi|Chứa lutein bảo vệ thị lực và da","🫖|Uống ấm|Sả nóng giúp kháng khuẩn đường hô hấp hiệu quả hơn"]},
+  {content:"Hoa lài có hương thơm dịu nhẹ, chứa nhiều chất chống oxy hoá và có tác dụng an thần nhẹ. Trà lài kết hợp đác thơm giúp thanh lọc cơ thể, cải thiện tiêu hoá và mang lại cảm giác thư thái.",cards:["🌸|Tinh dầu|Linalool","😌|An thần|Tự nhiên","💧|Thanh lọc|Gan, thận","🔥|Calo|~30 kcal/ly"],tips:["🌙|Uống buổi tối|Giúp thư giãn thần kinh và dễ ngủ hơn","🌸|Hương thơm|Có tác dụng aromatherapy nhẹ khi uống","🫖|Trà lài|Chứa catechin giúp đốt mỡ và kiểm soát cân nặng"]},
+  {content:"Dâu tằm và dâu đác đều giàu anthocyanin — chất tạo màu tím đỏ đặc trưng và là chất chống oxy hoá mạnh. Giúp bảo vệ tim mạch, cải thiện thị lực và làm chậm lão hoá da.",cards:["🫐|Anthocyanin|Rất cao","❤️|Tim mạch|Tốt cho huyết áp","👁|Thị lực|Bảo vệ mắt","🔥|Calo|~55 kcal/ly"],tips:["🍓|Màu tím tự nhiên|Anthocyanin giúp chống viêm và bảo vệ DNA","💄|Đẹp da|Collagen tự nhiên giúp da mịn màng","🧠|Tốt cho não|Cải thiện trí nhớ và tập trung"]},
+  {content:"Mãng cầu (na) chứa nhiều vitamin C, vitamin B và khoáng chất. Đặc biệt giàu annonaceous acetogenins — hợp chất được nghiên cứu về tác dụng hỗ trợ sức khoẻ. Vị ngọt thanh, mát lành.",cards:["💊|Vitamin|C, B1, B2","🌿|Chất xơ|Cao","🔥|Calo|~60 kcal/ly","💚|Khoáng|Magie, Kali"],tips:["🌿|Chất xơ dồi dào|Hỗ trợ tiêu hoá và ngăn ngừa táo bón","😴|Hỗ trợ giấc ngủ|Tryptophan trong mãng cầu giúp thư giãn","🍃|Lá mãng cầu|Truyền thống dùng để hạ sốt và kháng khuẩn"]},
+  {content:"Chanh dây (passion fruit) là siêu trái cây với hàm lượng vitamin C, A và chất xơ rất cao. Chứa nhiều chất chống oxy hoá giúp bảo vệ tế bào, cải thiện tiêu hoá và tăng cường miễn dịch.",cards:["🍋|Vitamin|C cực cao","🧡|Beta-carotene|Vitamin A","💧|Nước|>80%","🔥|Calo|~40 kcal/ly"],tips:["💊|Vitamin C cao|Một ly đáp ứng 40% nhu cầu vitamin C mỗi ngày","🌿|Chất xơ|Giúp no lâu và kiểm soát đường huyết","😌|GABA tự nhiên|Có tác dụng giảm lo âu và hạ huyết áp nhẹ"]},
+  {content:"Ổi hồng chứa nhiều vitamin C hơn cả cam — một quả ổi cung cấp gấp 4 lần vitamin C cần thiết mỗi ngày. Giàu lycopene, chất xơ và có chỉ số đường huyết thấp, rất tốt cho người tiểu đường.",cards:["🍃|Vitamin C|Cực cao","🌸|Lycopene|Chống ung thư","📊|GI thấp|Kiểm soát đường","🔥|Calo|~35 kcal/ly"],tips:["🦷|Tốt cho nướu|Vitamin C giúp sản sinh collagen bảo vệ nướu răng","💪|Tăng đề kháng|Uống đều đặn giúp chống cảm cúm theo mùa","🌿|Lá ổi|Trà lá ổi truyền thống giúp trị tiêu chảy hiệu quả"]},
+  {content:"Xoài là vua của các loại trái cây nhiệt đới, giàu vitamin A, C và folate. Kết hợp cùng chanh dây tạo nên sự cân bằng hoàn hảo giữa ngọt và chua, đồng thời tăng lượng vitamin C hấp thụ.",cards:["🥭|Vitamin|A, C, Folate","💛|Beta-carotene|Chống lão hoá","❤️|Tim mạch|Kali cao","🔥|Calo|~65 kcal/ly"],tips:["👁|Bảo vệ mắt|Beta-carotene và zeaxanthin giảm nguy cơ thoái hoá điểm vàng","💆|Giảm stress|Vitamin B6 giúp sản sinh serotonin","🤰|Tốt cho bầu|Folate rất cần cho sự phát triển thai nhi"]},
+  {content:"Táo chứa quercetin, catechin và chlorogenic acid — những chất chống oxy hoá mạnh. Kết hợp chanh dây tăng thêm vitamin C.",cards:["🍎|Quercetin|Chống viêm","🧠|Thần kinh|Tốt cho não","💊|Pectin|Tốt cho ruột","🔥|Calo|~50 kcal/ly"],tips:["🦷|Làm trắng răng|Enzyme táo giúp làm sạch men răng tự nhiên","🧠|Ngăn Alzheimer|Quercetin bảo vệ tế bào thần kinh","🫀|Tim mạch|Giảm LDL cholesterol và bảo vệ mạch máu"]},
+  {content:"Dưa lưới (cantaloupe) cực giàu vitamin A dạng beta-carotene và vitamin C. Hàm lượng nước trên 90% giúp giải nhiệt và bổ sung nước tuyệt vời.",cards:["🍈|Beta-carotene|Rất cao","💧|Nước|>90%","🔥|Calo|~28 kcal/ly","💊|Vitamin|A, C, B3"],tips:["☀️|Chống nắng từ trong|Beta-carotene giúp bảo vệ da dưới nắng mặt trời","💧|Hydrat hoá|Tốt nhất để bổ sung nước sau khi tập thể dục","😴|Cải thiện giấc ngủ|Chứa melatonin tự nhiên giúp ngủ sâu hơn"]},
+  {content:"Vải thiều chứa vitamin C, đồng và polyphenol. Đặc biệt giàu oligonol — chất chống oxy hoá hiếm có giúp cải thiện lưu thông máu.",cards:["🍇|Oligonol|Đặc biệt","💖|Lưu thông máu|Cải thiện","💊|Vitamin C|B6, Đồng","🔥|Calo|~60 kcal/ly"],tips:["🌺|Làm đẹp da|Oligonol giúp giảm nếp nhăn và tăng độ đàn hồi da","💪|Giảm mệt mỏi|Uống sau vận động giúp phục hồi nhanh","🌡|Mát gan|Y học cổ truyền dùng vải để thanh nhiệt"]},
+  {content:"Chanh chứa vitamin C, citric acid và flavonoid. Mùi chanh có tác dụng kích thích tinh thần, tăng tập trung.",cards:["🍋|Vitamin C|Citric acid","🧠|Tỉnh táo|Không caffeine","🦷|Làm sạch|Khoang miệng","🔥|Calo|~25 kcal/ly"],tips:["🌅|Buổi sáng|Chanh ấm lúc sáng giúp kích thích hệ tiêu hoá","⚖️|Kiểm soát cân|Pectin trong chanh giúp no lâu","🤸|Kiềm hoá máu|Mặc dù chua nhưng chanh giúp cân bằng pH máu"]},
+  {content:"Long nhãn (nhãn sấy/nhãn tươi) là vị thuốc quý trong Đông y. Giàu glucose, sucrose và nhiều vitamin B giúp bổ huyết, an thần, cải thiện trí nhớ.",cards:["🌕|Đường tự nhiên|Glucose","🧠|An thần|Bổ não","💊|Vitamin B|B1, B2, C","🔥|Calo|~55 kcal/ly"],tips:["😴|Ngủ ngon|Uống trà long nhãn buổi tối giúp cải thiện giấc ngủ","🧠|Bổ não|Truyền thống dùng cho người học, thi cử","💆|Giảm lo âu|Adenosine trong long nhãn có tác dụng an thần tự nhiên"]},
+  {content:"Cam giàu vitamin C, folate và chất xơ pectin. Flavonoid trong cam giúp giảm viêm và bảo vệ tim mạch.",cards:["🍊|Vitamin C|Rất cao","❤️|Tim mạch|Flavonoid","🌿|Pectin|Tốt ruột già","🔥|Calo|~45 kcal/ly"],tips:["💊|Hấp thụ sắt|Uống cùng bữa ăn giúp hấp thụ sắt từ thực vật","🤧|Chống cảm|Uống khi thời tiết thay đổi để tăng đề kháng","🌞|Làm sáng da|Vitamin C kích thích sản xuất collagen tự nhiên"]},
+  {content:"Tắc (quất) và chanh là hai loại quả giàu vitamin C và flavonoid nhất trong họ cam quýt. Thức uống giải nhiệt dân dã, giúp tiêu hoá và kháng khuẩn.",cards:["🍋|Vitamin C|Rất cao","🦠|Kháng khuẩn|Tự nhiên","💧|Giải nhiệt|Nhanh","🔥|Calo|~20 kcal/ly"],tips:["🤧|Trị ho|Tắc mật ong là bài thuốc dân gian cực hiệu quả","🧹|Detox|Citric acid giúp thải độc và làm sạch gan","🌡|Hạ sốt|Y học cổ truyền dùng nước chanh để hạ thân nhiệt"]},
+  {content:"Nha đam (aloe vera) chứa hơn 75 hoạt chất bao gồm vitamin, khoáng chất, enzyme và amino acid. Kết hợp cam tạo thức uống vừa ngon vừa có tác dụng làm mát và giải độc.",cards:["🌿|Aloesin|Làm đẹp da","💧|Gel nha đam|Mát lành","🔥|Calo|~35 kcal/ly","💊|Enzyme|>75 loại"],tips:["💆|Chữa lành|Gel nha đam tốt cho viêm loét dạ dày","✨|Làm đẹp da|Uống đều đặn giúp da ẩm mịn từ bên trong","🌡|Hạ nhiệt|Nha đam có tính hàn, rất tốt để giải nhiệt mùa hè"]},
+  {content:"Dâu tây là siêu thực phẩm chứa anthocyanin, vitamin C và manganese. Đặc biệt giàu fisetin — chất được nghiên cứu về tác dụng bảo vệ não và chống lão hoá.",cards:["🍓|Fisetin|Chống lão hoá","💊|Vitamin C|Rất cao","🧠|Bảo vệ não|Tự nhiên","🔥|Calo|~40 kcal/ly"],tips:["🧠|Tốt cho trí nhớ|Fisetin bảo vệ neuron và cải thiện học tập","💖|Tim mạch|Anthocyanin giảm nguy cơ đau tim","🌸|Làm sáng da|Ellagic acid ngăn ngừa sạm da do tia UV"]},
+  {content:"Kiwi là một trong những loại trái cây có hàm lượng vitamin C cao nhất — một quả kiwi chứa gấp đôi lượng vitamin C so với cam. Giàu vitamin K, E và actinidin.",cards:["🥝|Vitamin C|Gấp 2 lần cam","🩸|Vitamin K|Đông máu","🍽|Actinidin|Tiêu hoá","🔥|Calo|~42 kcal/ly"],tips:["😴|Ngủ ngon|Nghiên cứu cho thấy ăn kiwi trước ngủ cải thiện chất lượng giấc ngủ 40%","🫀|Chống đông máu|Vitamin K và polyphenol bảo vệ tim mạch","💧|Hydrat hoá|Chứa 83% nước, tốt cho thận và bàng quang"]},
+  {content:"Trà sen vàng macchiato là sự kết hợp tinh tế giữa hoa sen vàng và kem macchiato. Sen vàng là loài hoa quý trong Phật giáo và y học cổ truyền, có tác dụng an thần và thanh nhiệt.",cards:["🌸|Tinh dầu sen|Quý hiếm","😌|An thần|Thanh tâm","💛|Flavonoid|Bảo vệ tim","🔥|Calo|~80 kcal/ly"],tips:["🧘|Thiền định|Hương sen giúp tập trung và giảm lo âu","💆|Thanh lọc|Sen vàng thanh lọc tâm trí và cơ thể","🌿|Y học cổ|Hạt sen an thần, lá sen hạ mỡ máu"]},
+  {content:"Dừa tươi là thức uống điện giải tự nhiên tốt nhất. Nước dừa chứa cytokinin giúp chống lão hoá tế bào, kali hỗ trợ tim mạch và lauric acid có tác dụng kháng virus.",cards:["🥥|Điện giải|Kali, Magie","🦠|Lauric acid|Kháng virus","💧|Nước dừa|Tinh khiết","🔥|Calo|~45 kcal/ly"],tips:["⚡|Bù điện giải|Tốt nhất sau tập thể dục hoặc khi sốt","🌴|Tự nhiên 100%|Không chất bảo quản, không đường nhân tạo","🤰|An toàn|Rất tốt cho phụ nữ mang thai và cho con bú"]}
+];
+const DEFAULT=[
+  {name:"Trà trái cây nhiệt đới",price:"30K",e:"🍃",q:"Một ngụm nhiệt đới — như gió mát thổi qua những ngày hè nồng nực, mang bình yên về trong lòng."},
+  {name:"Trà đào cam sả",price:"30K",e:"🍑",q:"Vị đào thơm ngọt, cam tươi mát, sả nồng ấm — ba thanh âm hoà quyện thành bản nhạc dịu dàng cho buổi chiều."},
+  {name:"Trà lài đác thơm",price:"30K",e:"🌸",q:"Hương lài thanh khiết như lời thì thầm của mùa xuân — nhẹ nhàng đọng lại mãi không tan."},
+  {name:"Trà dâu tằm / dâu đác",price:"30K",e:"🍓",q:"Tím biếc như hoàng hôn, ngọt ngào như ký ức — mỗi giọt dâu là một câu chuyện nhỏ đáng nhớ."},
+  {name:"Trà mãng cầu",price:"30K",e:"🍈",q:"Thanh vị mãng cầu — nhẹ như mây trời, ngọt như lời hứa đầu mùa, mát lạnh tận tâm can."},
+  {name:"Trà chanh dây đác",price:"30K",e:"🍋",q:"Chua chua ngọt ngọt như những tháng ngày còn trẻ — uống một ngụm, thấy cả tuổi thanh xuân ùa về."},
+  {name:"Trà ổi hồng",price:"25K",e:"🍏",q:"Ổi hồng giòn tan trong ly trà xanh mát — bình dị mà thân thương như khoảng sân nhà ngày thơ ấu."},
+  {name:"Trà xoài / xoài chanh dây",price:"25K",e:"🥭",q:"Vàng ươm như nắng ban mai, chua nhẹ như gió chiều — xoài chanh dây là mùa hè đóng trong một ly."},
+  {name:"Trà táo / táo chanh dây",price:"25K",e:"🍎",q:"Giòn tươi, thanh mát, nhẹ bước vào ngày mới — ly trà táo nhắc ta rằng những điều giản dị mới đẹp nhất."},
+  {name:"Trà dưa lưới",price:"25K",e:"🍈",q:"Ngọt lịm như nụ cười ai đó — dưa lưới tan trên đầu lưỡi, để lại mùa hè đọng mãi trong tâm trí."},
+  {name:"Trà vải",price:"25K",e:"🍇",q:"Vải chín mọng, hương thơm ngan ngát — uống một lần như ngồi dưới tán vải giữa trưa hè trong vắt."},
+  {name:"Trà chanh nhiệt đới",price:"25K",e:"🍋",q:"Chanh chua táo tợn, nhiệt đới rực rỡ — ly trà thức tỉnh mọi giác quan, bắt đầu ngày mới tràn năng lượng."},
+  {name:"Trà long nhãn",price:"25K",e:"🌕",q:"Ngọt thanh như ánh trăng rằm — long nhãn ủ trong trà xanh, mang hơi ấm yên bình đến từng ngụm uống."},
+  {name:"Cam chanh dây",price:"25K",e:"🍊",q:"Cam vàng rực rỡ gặp chanh dây tím huyền bí — hai thế giới hoà làm một, tươi mới và đầy bất ngờ thú vị."},
+  {name:"Trà tắc / trà chanh",price:"15K",e:"🍋",q:"Đơn giản như bình minh — chanh tắc thân quen, mát lành, nhắc nhở ta trân trọng những điều nhỏ bé mỗi ngày."},
+  {name:"Trà cam nha đam",price:"25K",e:"🍊",q:"Cam ngọt dịu hoà cùng nha đam mát lạnh — tốt lành cho da, tốt lành cho lòng, uống là thấy nhẹ cả người."},
+  {name:"Trà dâu tây",price:"25K",e:"🍓",q:"Đỏ thắm như trái tim đang yêu — dâu tây ngọt ngào, chua nhẹ, mang cảm giác lãng mạn vào mỗi buổi chiều."},
+  {name:"Trà kiwi",price:"30K",e:"🥝",q:"Xanh tươi, rực rỡ như khát vọng tuổi trẻ — kiwi mạnh mẽ, đầy vitamin, tiếp thêm năng lượng cho mọi hành trình."},
+  {name:"Trà sen vàng macchiato",price:"40K",e:"🌸",q:"Sen vàng nở giữa trà xanh — thanh cao mà gần gũi, như người bạn đồng hành lặng lẽ sẻ chia mọi khoảnh khắc."},
+  {name:"Cam vải / dừa tươi",price:"20K",e:"🥥",q:"Dừa mát lành, cam tươi ngọt, vải chín thơm — bộ ba thiên nhiên ban tặng, uống vào như được ôm cả mùa hè."},
+];
+
+let ITEMS=[],imgs={},activeImg=null,activeEdit=null,selE="🍃",selEAdd="🍃";
+let BRAND={...DEFAULT_BRAND};
+let healthData=[],bgImgs={};
+let currentHealthIdx=null,healthEditMode=false;
+
+// Library state
+let libCat='Tất cả', libSelectedUrl=null, currentImgTab='upload';
+
+function load(){
+  try{const d=localStorage.getItem(KEY_ITEMS);ITEMS=d?JSON.parse(d):[...DEFAULT];}catch(e){ITEMS=[...DEFAULT];}
+  try{const d=localStorage.getItem(KEY_IMGS);if(d)imgs=JSON.parse(d);}catch(e){imgs={};}
+  try{const d=localStorage.getItem(KEY_BRAND);if(d)BRAND={...DEFAULT_BRAND,...JSON.parse(d)};}catch(e){}
+  try{const d=localStorage.getItem(KEY_HEALTH);healthData=d?JSON.parse(d):JSON.parse(JSON.stringify(DEFAULT_HEALTH));}catch(e){healthData=JSON.parse(JSON.stringify(DEFAULT_HEALTH));}
+  try{const d=localStorage.getItem(KEY_BGIMGS);if(d)bgImgs=JSON.parse(d);}catch(e){bgImgs={};}
+}
+function saveItems(){try{localStorage.setItem(KEY_ITEMS,JSON.stringify(ITEMS));}catch(e){}}
+function saveImgs(){try{localStorage.setItem(KEY_IMGS,JSON.stringify(imgs));}catch(e){toast("Ảnh quá lớn!");}}
+function saveBrandData(){try{localStorage.setItem(KEY_BRAND,JSON.stringify(BRAND));}catch(e){}}
+function saveHealth(){try{localStorage.setItem(KEY_HEALTH,JSON.stringify(healthData));}catch(e){}}
+function saveBgImgs(){try{localStorage.setItem(KEY_BGIMGS,JSON.stringify(bgImgs));}catch(e){toast("Ảnh nền quá lớn!");}}
+
+function renderBrand(){
+  document.getElementById('heroBrand').textContent=BRAND.brand;
+  document.getElementById('heroName').textContent=BRAND.name;
+  document.getElementById('heroSub').textContent=BRAND.sub;
+  document.getElementById('infoPhone').textContent=BRAND.phone;
+  document.getElementById('infoPlace').textContent=BRAND.place;
+  document.getElementById('infoAddr').textContent=BRAND.addr;
+  document.title=BRAND.name+' – Trà Trái Cây Tươi';
+}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400);}
+
+function render(){
+  document.getElementById('grid').innerHTML=ITEMS.map((it,i)=>`
+    <div class="card" onclick="openHealth(${i})">
+      <div class="img-wrap" onmouseenter="showE(${i})" onmouseleave="hideE(${i})" onclick="event.stopPropagation()">
+        ${imgs[i]?`<img src="${imgs[i]}" alt="${it.name}">`:`<div class="placeholder"><span>${it.e}</span><small>Chưa có ảnh</small></div>`}
+        <button class="edit-pill" id="ep${i}" onclick="event.stopPropagation();openImgModal(${i})">✏ Sửa ảnh</button>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${it.name}</div>
+        <span class="card-price">${it.price}</span>
+        <button class="card-edit-btn" onclick="event.stopPropagation();openEditModal(${i})">✎ Sửa</button>
+        <button class="card-order-btn" onclick="event.stopPropagation();addToCart(${i},event)">+ Đặt</button>
+        <span class="tap-hint">Nhấn để xem sức khoẻ</span>
+      </div>
+    </div>`).join('');
+}
+function showE(i){const b=document.getElementById('ep'+i);if(b)b.style.opacity='1';}
+function hideE(i){const b=document.getElementById('ep'+i);if(b)b.style.opacity='0';}
+
+// ===== IMAGE LIBRARY FUNCTIONS =====
+function switchImgTab(tab){
+  currentImgTab=tab;
+  document.querySelectorAll('.img-tab').forEach((el,i)=>{
+    el.classList.toggle('active',['upload','library','url'][i]===tab);
+  });
+  document.getElementById('tabUpload').classList.toggle('active',tab==='upload');
+  document.getElementById('tabLibrary').classList.toggle('active',tab==='library');
+  document.getElementById('tabUrl').classList.toggle('active',tab==='url');
+  if(tab==='library') renderLibrary();
+}
+
+function renderLibFilters(){
+  document.getElementById('libFilters').innerHTML=LIB_CATS.map(c=>
+    `<button class="lib-filter${c===libCat?' active':''}" onclick="setLibCat('${c}')">${c}</button>`
+  ).join('');
+}
+
+function setLibCat(cat){
+  libCat=cat;libSelectedUrl=null;
+  document.getElementById('libUseBtn').classList.remove('show');
+  renderLibFilters();
+  renderLibGrid();
+}
+
+function renderLibGrid(){
+  const filtered=libCat==='Tất cả'?IMAGE_LIBRARY:IMAGE_LIBRARY.filter(x=>x.cat===libCat);
+  if(!filtered.length){
+    document.getElementById('libGrid').innerHTML=`<div class="lib-empty" style="grid-column:1/-1">Không có ảnh trong danh mục này</div>`;
+    return;
+  }
+  document.getElementById('libGrid').innerHTML=filtered.map(img=>`
+    <div class="lib-item${libSelectedUrl===img.url?' selected':''}" onclick="selectLibImg('${img.url}',this)" title="${img.label}">
+      <img src="${img.url}" alt="${img.label}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'lib-item-emoji\\'>🍹</div>'">
+      <div class="lib-item-label">${img.label}</div>
+    </div>
+  `).join('');
+}
+
+function renderLibrary(){
+  renderLibFilters();
+  renderLibGrid();
+}
+
+function selectLibImg(url, el){
+  libSelectedUrl=url;
+  document.querySelectorAll('.lib-item').forEach(x=>x.classList.remove('selected'));
+  el.classList.add('selected');
+  const pv=document.getElementById('preview');
+  pv.innerHTML=`<img src="${url}" alt="preview">`;
+  document.getElementById('libUseBtn').classList.add('show');
+}
+
+function applyLibraryImg(){
+  if(!libSelectedUrl||activeImg===null)return;
+  cropResize(libSelectedUrl,r=>{
+    imgs[activeImg]=r;saveImgs();render();closeImgModal();toast('Đã lưu ảnh từ thư viện ✓');
+  });
+}
+
+// ===== HEALTH TAB =====
+let htabAnimId=null;
+
+function openHealth(i){
+  currentHealthIdx=i;
+  healthEditMode=false;
+  document.getElementById('htabEditPanel').classList.remove('open');
+  document.getElementById('htabViewMode').style.display='block';
+  document.getElementById('htabEditBtn').textContent='✎ Chỉnh nội dung';
+
+  const it=ITEMS[i];
+  const h=healthData[i]||DEFAULT_HEALTH[i]||DEFAULT_HEALTH[0];
+
+  const thumb=document.getElementById('htabThumb');
+  if(imgs[i]) thumb.innerHTML=`<img src="${imgs[i]}" alt="${it.name}">`;
+  else thumb.innerHTML=`<span>${it.e}</span>`;
+
+  document.getElementById('htabName').textContent=it.name;
+  document.getElementById('htabPrice').textContent=it.price;
+  document.getElementById('htabTagline').textContent=it.q||'';
+  document.getElementById('htabContent').textContent=h.content||'';
+
+  const cards=h.cards||[];
+  document.getElementById('htabCards').innerHTML=cards.map(c=>{
+    const p=c.split('|');
+    return `<div class="hcard"><div class="hcard-icon">${p[0]||''}</div><div class="hcard-label">${p[1]||''}</div><div class="hcard-val">${p[2]||''}</div></div>`;
+  }).join('');
+
+  const tips=h.tips||[];
+  document.getElementById('htabTips').innerHTML=tips.map(t=>{
+    const p=t.split('|');
+    return `<div class="tip-item"><div class="tip-dot">${p[0]||'💡'}</div><div class="tip-text"><strong style="color:#9FE1CB">${p[1]||''}</strong><br>${p[2]||''}</div></div>`;
+  }).join('');
+
+  const bgImg=document.getElementById('htabBgImg');
+  if(bgImgs[i]){bgImg.src=bgImgs[i];bgImg.style.display='block';}
+  else{bgImg.style.display='none';bgImg.src='';}
+
+  startHtabAnim();
+  document.getElementById('htabWrap').classList.add('open');
+  document.getElementById('htabScroll').scrollTop=0;
+}
+
+function closeHealth(){
+  document.getElementById('htabWrap').classList.remove('open');
+  if(htabAnimId){cancelAnimationFrame(htabAnimId);htabAnimId=null;}
+}
+
+function toggleHealthEdit(){
+  healthEditMode=!healthEditMode;
+  const i=currentHealthIdx;
+  const h=healthData[i]||DEFAULT_HEALTH[i]||{};
+  if(healthEditMode){
+    document.getElementById('htabEditPanel').classList.add('open');
+    document.getElementById('htabViewMode').style.display='none';
+    document.getElementById('htabEditBtn').textContent='👁 Xem trước';
+    const it=ITEMS[i];
+    document.getElementById('heTagline').value=it.q||'';
+    document.getElementById('heContent').value=h.content||'';
+    const tips=h.tips||['','',''];
+    document.getElementById('heTip1').value=tips[0]||'';
+    document.getElementById('heTip2').value=tips[1]||'';
+    document.getElementById('heTip3').value=tips[2]||'';
+    const cards=h.cards||['','','',''];
+    document.getElementById('heCard1').value=cards[0]||'';
+    document.getElementById('heCard2').value=cards[1]||'';
+    document.getElementById('heCard3').value=cards[2]||'';
+    document.getElementById('heCard4').value=cards[3]||'';
+  } else {
+    document.getElementById('htabEditPanel').classList.remove('open');
+    document.getElementById('htabViewMode').style.display='block';
+    document.getElementById('htabEditBtn').textContent='✎ Chỉnh nội dung';
+  }
+}
+function cancelHealthEdit(){healthEditMode=false;document.getElementById('htabEditPanel').classList.remove('open');document.getElementById('htabViewMode').style.display='block';document.getElementById('htabEditBtn').textContent='✎ Chỉnh nội dung';}
+
+function saveHealthContent(){
+  const i=currentHealthIdx;
+  if(i===null)return;
+  if(!healthData[i])healthData[i]={};
+  ITEMS[i].q=document.getElementById('heTagline').value.trim();
+  healthData[i].content=document.getElementById('heContent').value.trim();
+  healthData[i].tips=[document.getElementById('heTip1').value.trim(),document.getElementById('heTip2').value.trim(),document.getElementById('heTip3').value.trim()].filter(x=>x);
+  healthData[i].cards=[document.getElementById('heCard1').value.trim(),document.getElementById('heCard2').value.trim(),document.getElementById('heCard3').value.trim(),document.getElementById('heCard4').value.trim()].filter(x=>x);
+  saveItems();saveHealth();
+  cancelHealthEdit();
+  openHealth(i);
+  toast('Đã lưu nội dung sức khoẻ ✓');
+}
+
+/* bg picker */
+function openBgPicker(){document.getElementById('overlayBgPick').classList.add('open');}
+function closeBgPicker(){document.getElementById('overlayBgPick').classList.remove('open');}
+function applyBgUrl(){
+  const u=document.getElementById('bgUrlIn').value.trim();
+  if(!u||currentHealthIdx===null)return;
+  bgImgs[currentHealthIdx]=u;saveBgImgs();
+  const bgImg=document.getElementById('htabBgImg');bgImg.src=u;bgImg.style.display='block';
+  closeBgPicker();toast('Đã đặt hình nền ✓');
+}
+function removeBg(){
+  if(currentHealthIdx===null)return;
+  delete bgImgs[currentHealthIdx];saveBgImgs();
+  const bgImg=document.getElementById('htabBgImg');bgImg.style.display='none';bgImg.src='';
+  closeBgPicker();toast('Đã xoá hình nền');
+}
+document.getElementById('overlayBgPick').addEventListener('click',e=>{if(e.target===e.currentTarget)closeBgPicker();});
+document.getElementById('bgFi').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f||currentHealthIdx===null)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    bgImgs[currentHealthIdx]=ev.target.result;saveBgImgs();
+    const bgImg=document.getElementById('htabBgImg');bgImg.src=ev.target.result;bgImg.style.display='block';
+    closeBgPicker();toast('Đã đặt hình nền ✓');
+  };
+  r.readAsDataURL(f);this.value='';
+});
+const bgDz=document.getElementById('bgDropZone');
+bgDz.addEventListener('dragover',e=>{e.preventDefault();bgDz.style.background='#c5eddf';});
+bgDz.addEventListener('dragleave',()=>bgDz.style.background='');
+bgDz.addEventListener('drop',e=>{e.preventDefault();bgDz.style.background='';const f=e.dataTransfer.files[0];if(!f||currentHealthIdx===null)return;const r=new FileReader();r.onload=ev=>{bgImgs[currentHealthIdx]=ev.target.result;saveBgImgs();const bg=document.getElementById('htabBgImg');bg.src=ev.target.result;bg.style.display='block';closeBgPicker();toast('Đã đặt hình nền ✓');};r.readAsDataURL(f);});
+
+/* htab canvas animation */
+function startHtabAnim(){
+  if(htabAnimId){cancelAnimationFrame(htabAnimId);htabAnimId=null;}
+  const cv=document.getElementById('htabCanvas');
+  const ctx=cv.getContext('2d');
+  const htab=document.getElementById('htab');
+  let W,H,t=0;
+  const FRUITS=['🍑','🍓','🍋','🥭','🍏','🥝','🍊','🍇','🥥','🌿','✨','💧'];
+  const particles=[];
+  function resize(){W=cv.width=htab.offsetWidth||360;H=cv.height=htab.offsetHeight||600;}
+  function mkP(){return{x:Math.random()*W,y:H+20,sz:12+Math.random()*16,sp:0.3+Math.random()*0.6,rt:Math.random()*6.28,rS:(Math.random()-0.5)*0.025,wb:Math.random()*6.28,wS:0.012+Math.random()*0.012,al:0.3+Math.random()*0.4,f:FRUITS[Math.floor(Math.random()*FRUITS.length)]};}
+  function mkB(){return{x:Math.random()*W,y:H+20,r:6+Math.random()*12,sp:0.3+Math.random()*0.5,wb:Math.random()*6.28,wS:0.015+Math.random()*0.02,al:0.06+Math.random()*0.08};}
+  for(let i=0;i<10;i++){const p=mkP();p.y=Math.random()*H;particles.push({type:'f',...p});}
+  for(let i=0;i<12;i++){const b=mkB();b.y=Math.random()*H;particles.push({type:'b',...b});}
+  function wv(yb,amp,fr,ph,c){ctx.beginPath();ctx.moveTo(0,H);for(let x=0;x<=W;x+=3)ctx.lineTo(x,yb+Math.sin(x*fr+ph)*amp+Math.sin(x*fr*0.5+ph*1.2)*amp*0.3);ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=c;ctx.fill();}
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    ctx.fillStyle='#052918';ctx.fillRect(0,0,W,H);
+    [[0.2,0.06],[0.55,0.04],[0.8,0.05]].forEach(([px,a])=>{
+      const g=ctx.createLinearGradient(W*px,0,W*px,H);
+      g.addColorStop(0,'rgba(70,200,120,'+a+')');g.addColorStop(1,'rgba(70,200,120,0)');
+      ctx.beginPath();ctx.moveTo(W*px-20,0);ctx.lineTo(W*px+20,0);ctx.lineTo(W*px+50,H);ctx.lineTo(W*px-50,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();
+    });
+    wv(H*0.55,8,0.022,t*0.8,'rgba(12,100,75,0.45)');
+    wv(H*0.65,6,0.028,t*1.0+1,'rgba(16,120,88,0.35)');
+    wv(H*0.75,5,0.034,t*1.2+2,'rgba(22,145,105,0.25)');
+    ctx.save();
+    particles.forEach((p,idx)=>{
+      if(p.type==='f'){
+        p.y-=p.sp;p.rt+=p.rS;p.wb+=p.wS;
+        const lx=p.x+Math.sin(p.wb)*18;
+        ctx.save();ctx.globalAlpha=p.al;ctx.translate(lx,p.y);ctx.rotate(p.rt);
+        ctx.font=p.sz+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.f,0,0);ctx.restore();
+        if(p.y<-30){const np=mkP();particles[idx]={type:'f',...np};}
+      } else {
+        p.y-=p.sp;p.wb+=p.wS;
+        const bx=p.x+Math.sin(p.wb)*12;
+        ctx.beginPath();ctx.arc(bx,p.y,p.r,0,6.28);ctx.strokeStyle='rgba(140,230,190,'+p.al+')';ctx.lineWidth=1;ctx.stroke();
+        if(p.y<-20){const nb=mkB();particles[idx]={type:'b',...nb};}
+      }
+    });
+    ctx.restore();
+    t+=0.016;
+    htabAnimId=requestAnimationFrame(frame);
+  }
+  resize();
+  const ro=new ResizeObserver(resize);ro.observe(htab);
+  frame();
+}
+
+/* ===== ADMIN MODALS ===== */
+function openImgModal(i){
+  activeImg=i;
+  libSelectedUrl=null;
+  document.getElementById('libUseBtn').classList.remove('show');
+  document.getElementById('imgModalTitle').textContent=ITEMS[i].name;
+  const pv=document.getElementById('preview');
+  pv.innerHTML=imgs[i]?`<img src="${imgs[i]}" alt="">`:`<span class="no-img">${ITEMS[i].e}</span>`;
+  switchImgTab('upload');
+  document.getElementById('overlayImg').classList.add('open');
+  document.getElementById('urlIn').value='';
+}
+function closeImgModal(){document.getElementById('overlayImg').classList.remove('open');activeImg=null;}
+function resetImg(){if(activeImg===null)return;delete imgs[activeImg];saveImgs();render();closeImgModal();toast('Đã xoá ảnh');}
+function applyUrl(){
+  const u=document.getElementById('urlIn').value.trim();
+  if(!u||activeImg===null)return;
+  cropResize(u,r=>{imgs[activeImg]=r;saveImgs();render();closeImgModal();toast('Đã lưu ảnh ✓');});
+}
+function cropResize(src,cb){
+  const W=784,H=1168,img=new Image();img.crossOrigin='anonymous';
+  img.onload=function(){
+    const c=document.createElement('canvas');c.width=W;c.height=H;
+    const ctx=c.getContext('2d'),sc=Math.max(W/img.width,H/img.height);
+    ctx.drawImage(img,(W-img.width*sc)/2,(H-img.height*sc)/2,img.width*sc,img.height*sc);
+    cb(c.toDataURL('image/jpeg',0.88));
+  };
+  img.onerror=()=>{
+    const img2=new Image();
+    img2.onload=function(){
+      const c=document.createElement('canvas');c.width=W;c.height=H;
+      const ctx=c.getContext('2d'),sc=Math.max(W/img2.width,H/img2.height);
+      ctx.drawImage(img2,(W-img2.width*sc)/2,(H-img2.height*sc)/2,img2.width*sc,img2.height*sc);
+      try{cb(c.toDataURL('image/jpeg',0.88));}catch(e){cb(src);}
+    };
+    img2.onerror=()=>toast('Không tải được ảnh từ URL này');
+    img2.src=src;
+  };
+  img.src=src;
+}
+function setImg(src){if(activeImg===null)return;cropResize(src,r=>{imgs[activeImg]=r;saveImgs();render();closeImgModal();toast('Đã lưu ảnh 784×1168 ✓');});}
+document.getElementById('overlayImg').addEventListener('click',e=>{if(e.target===e.currentTarget)closeImgModal();});
+document.getElementById('fi').addEventListener('change',function(e){const f=e.target.files[0];if(!f||activeImg===null)return;const r=new FileReader();r.onload=ev=>setImg(ev.target.result);r.readAsDataURL(f);this.value='';});
+const dz=document.getElementById('dropZone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.style.background='#c5eddf';});
+dz.addEventListener('dragleave',()=>dz.style.background='');
+dz.addEventListener('drop',e=>{e.preventDefault();dz.style.background='';const f=e.dataTransfer.files[0];if(!f||activeImg===null)return;const r=new FileReader();r.onload=ev=>setImg(ev.target.result);r.readAsDataURL(f);});
+
+function buildPicker(id,cur,isAdd){document.getElementById(id).innerHTML=EMOJIS.map(em=>`<span class="epick${em===cur?' sel':''}" onclick="pickE(this,'${id}','${em}',${isAdd})">${em}</span>`).join('');}
+function pickE(el,id,em,isAdd){document.querySelectorAll('#'+id+' .epick').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');if(isAdd)selEAdd=em;else selE=em;}
+
+function openEditModal(i){
+  activeEdit=i;selE=ITEMS[i].e;
+  document.getElementById('editName').value=ITEMS[i].name;
+  document.getElementById('editPrice').value=ITEMS[i].price;
+  document.getElementById('editQuote').value=ITEMS[i].q||'';
+  buildPicker('emojiPick',ITEMS[i].e,false);
+  document.getElementById('overlayEdit').classList.add('open');
+}
+function closeEditModal(){document.getElementById('overlayEdit').classList.remove('open');activeEdit=null;}
+function saveItemEdit(){
+  if(activeEdit===null)return;
+  const name=document.getElementById('editName').value.trim();
+  const price=document.getElementById('editPrice').value.trim();
+  const q=document.getElementById('editQuote').value.trim();
+  if(!name){toast('Vui lòng nhập tên món');return;}
+  ITEMS[activeEdit]={...ITEMS[activeEdit],name,price:price||'--',e:selE,q};
+  saveItems();render();closeEditModal();toast('Đã lưu thay đổi ✓');
+}
+function deleteItem(){
+  if(activeEdit===null)return;
+  if(!confirm('Xoá món "'+ITEMS[activeEdit].name+'" khỏi menu?'))return;
+  ITEMS.splice(activeEdit,1);healthData.splice(activeEdit,1);
+  const ni={},nb={};
+  Object.keys(imgs).forEach(k=>{const idx=parseInt(k);if(idx<activeEdit)ni[idx]=imgs[k];else if(idx>activeEdit)ni[idx-1]=imgs[k];});
+  Object.keys(bgImgs).forEach(k=>{const idx=parseInt(k);if(idx<activeEdit)nb[idx]=bgImgs[k];else if(idx>activeEdit)nb[idx-1]=bgImgs[k];});
+  imgs=ni;bgImgs=nb;saveItems();saveImgs();saveHealth();saveBgImgs();render();closeEditModal();toast('Đã xoá món');
+}
+document.getElementById('overlayEdit').addEventListener('click',e=>{if(e.target===e.currentTarget)closeEditModal();});
+
+function openAddModal(){selEAdd='🍃';document.getElementById('addName').value='';document.getElementById('addPrice').value='';document.getElementById('addQuote').value='';buildPicker('emojiPickAdd','🍃',true);document.getElementById('overlayAdd').classList.add('open');}
+function closeAddModal(){document.getElementById('overlayAdd').classList.remove('open');}
+function saveNewItem(){
+  const name=document.getElementById('addName').value.trim();
+  const price=document.getElementById('addPrice').value.trim();
+  const q=document.getElementById('addQuote').value.trim();
+  if(!name){toast('Vui lòng nhập tên món');return;}
+  ITEMS.push({name,price:price||'--',e:selEAdd,q:q||'Thức uống tươi mát, mang lại niềm vui mỗi ngày.'});
+  healthData.push({content:'Thức uống này được làm từ nguyên liệu tươi tự nhiên, giàu vitamin và khoáng chất.',cards:['💊|Vitamin|Tự nhiên','💧|Nước|Bổ sung','🌿|Tự nhiên|100%','🔥|Calo|Thấp'],tips:['💧|Giải khát|Bổ sung nước hiệu quả cho cơ thể','🌿|Tươi sạch|Nguyên liệu được chọn lọc kỹ càng','✨|Tốt cho sức khoẻ|Uống đều đặn để thấy sự khác biệt']});
+  saveItems();saveHealth();render();closeAddModal();toast('Đã thêm: '+name+' ✓');
+}
+document.getElementById('overlayAdd').addEventListener('click',e=>{if(e.target===e.currentTarget)closeAddModal();});
+
+function openBrandModal(){
+  document.getElementById('bName').value=BRAND.name;document.getElementById('bSub').value=BRAND.sub;
+  document.getElementById('bBrand').value=BRAND.brand;document.getElementById('bPhone').value=BRAND.phone;
+  document.getElementById('bPlace').value=BRAND.place;document.getElementById('bAddr').value=BRAND.addr;
+  document.getElementById('overlayBrand').classList.add('open');
+}
+function closeBrandModal(){document.getElementById('overlayBrand').classList.remove('open');}
+function saveBrand(){
+  BRAND.name=document.getElementById('bName').value.trim()||BRAND.name;
+  BRAND.sub=document.getElementById('bSub').value.trim()||BRAND.sub;
+  BRAND.brand=document.getElementById('bBrand').value.trim()||BRAND.brand;
+  BRAND.phone=document.getElementById('bPhone').value.trim()||BRAND.phone;
+  BRAND.place=document.getElementById('bPlace').value.trim()||BRAND.place;
+  BRAND.addr=document.getElementById('bAddr').value.trim()||BRAND.addr;
+  saveBrandData();renderBrand();closeBrandModal();toast('Đã lưu thông tin thương hiệu ✓');
+}
+document.getElementById('overlayBrand').addEventListener('click',e=>{if(e.target===e.currentTarget)closeBrandModal();});
+
+function openExportModal(){document.getElementById('overlayExport').classList.add('open');}
+function closeExportModal(){document.getElementById('overlayExport').classList.remove('open');}
+document.getElementById('overlayExport').addEventListener('click',e=>{if(e.target===e.currentTarget)closeExportModal();});
+
+function exportReadonly(){
+  const B=BRAND;
+  const iJ=JSON.stringify(ITEMS).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const mJ=JSON.stringify(imgs).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const hJ=JSON.stringify(healthData).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const bJ=JSON.stringify(bgImgs).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const qJ=JSON.stringify(QRZ).replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\$/g,'\\$');
+  const html=buildReadonlyHtml(B,iJ,mJ,hJ,bJ,qJ);
+  const blob=new Blob([html],{type:'text/html;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=B.name.replace(/\s+/g,'-')+'-KHACHHANG.html';a.click();URL.revokeObjectURL(a.href);
+  closeExportModal();toast('Đã xuất file cho khách ✓');
+}
+
+function buildReadonlyHtml(B,iJ,mJ,hJ,bJ,qJ){
+return`<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>`+B.name+` – Menu</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f0;min-height:100vh}
+.hero{background:#073d28;padding:0;text-align:center;position:relative;overflow:hidden;min-height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.hero-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.hero-content{position:relative;z-index:2;padding:2.2rem 1.5rem 2rem;width:100%}
+.brand-label{font-size:11px;font-weight:700;letter-spacing:3px;color:#9FE1CB;margin-bottom:8px;text-transform:uppercase}
+.hero-name{font-size:32px;font-weight:700;color:#fff;margin-bottom:5px;text-shadow:0 2px 16px rgba(0,0,0,.3);letter-spacing:1px}
+.hero-sub{font-size:13px;color:#b8f0d8}
+.hero-divider{width:44px;height:2px;background:#5DCAA5;margin:14px auto 0;border-radius:2px}
+.info-bar{display:flex;flex-wrap:wrap;background:#fff;border-bottom:1px solid #e8e8e4}
+.info-item{flex:1;min-width:180px;display:flex;align-items:center;gap:10px;padding:12px 18px;border-right:1px solid #e8e8e4}
+.info-item:last-child{border-right:none}
+.info-icon{width:32px;height:32px;border-radius:50%;background:#E1F5EE;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:15px}
+.info-text{font-size:12px;line-height:1.5;color:#666}
+.info-text strong{color:#1a1a1a;font-weight:600;font-size:13px;display:block}
+.section-label{font-size:11px;font-weight:600;letter-spacing:1.5px;color:#0F6E56;text-transform:uppercase;padding:1.25rem 1rem .75rem;background:#fff;border-bottom:1px solid #e8e8e4}
+.container{background:#fff;padding:1px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:1px;background:#e8e8e4}
+.card{background:#fff;display:flex;flex-direction:column;cursor:pointer;transition:transform .15s;position:relative}
+.card:hover{transform:translateY(-2px)}
+.img-wrap{width:100%;aspect-ratio:784/1168;background:#E1F5EE;overflow:hidden;position:relative}
+.img-wrap img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.card:hover .img-wrap img{transform:scale(1.04)}
+.placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.placeholder span{font-size:34px}
+.placeholder small{font-size:10px;color:#0F6E56;opacity:.6}
+.card-body{padding:9px 11px 11px;flex:1;display:flex;flex-direction:column;justify-content:space-between;position:relative}
+.card-name{font-size:12px;font-weight:500;color:#1a1a1a;line-height:1.45}
+.card-price{display:inline-block;margin-top:5px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;background:#E1F5EE;color:#0F6E56}
+.card-order-btn{position:absolute;bottom:8px;right:8px;background:#0F6E56;color:#fff;border:none;border-radius:20px;padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;opacity:0;transition:opacity .15s;font-family:inherit;z-index:2}
+.card:hover .card-order-btn{opacity:1}
+.footer{text-align:center;padding:1.5rem 1rem;background:#fff;border-top:1px solid #e8e8e4;margin-top:1px}
+.footer p{font-size:12px;color:#aaa}
+/* health tab */
+.htab-wrap{position:fixed;inset:0;z-index:250;pointer-events:none}
+.htab-wrap.open{pointer-events:all}
+.htab-backdrop{position:absolute;inset:0;background:rgba(4,30,18,.65);opacity:0;transition:opacity .35s;backdrop-filter:blur(4px)}
+.htab-wrap.open .htab-backdrop{opacity:1}
+.htab{position:absolute;bottom:0;left:0;right:0;max-height:92vh;border-radius:24px 24px 0 0;overflow:hidden;transform:translateY(100%);transition:transform .42s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column}
+.htab-wrap.open .htab{transform:translateY(0)}
+.htab-bg-layer{position:absolute;inset:0;z-index:0}
+.htab-bg-canvas{position:absolute;inset:0;width:100%;height:100%}
+.htab-bg-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.22}
+.htab-scroll{position:relative;z-index:2;overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch}
+.htab-handle{display:flex;justify-content:center;padding:12px 0 4px;cursor:pointer}
+.htab-handle-bar{width:36px;height:4px;background:rgba(255,255,255,.35);border-radius:2px}
+.htab-hero{display:flex;align-items:center;gap:14px;padding:0 20px 16px}
+.htab-thumb{width:72px;height:72px;border-radius:16px;overflow:hidden;flex-shrink:0;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-size:36px;border:1.5px solid rgba(255,255,255,.2)}
+.htab-thumb img{width:100%;height:100%;object-fit:cover}
+.htab-drink-name{font-size:20px;font-weight:700;color:#fff;line-height:1.3;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+.htab-price-tag{display:inline-block;font-size:12px;font-weight:600;color:#5DCAA5;background:rgba(93,202,165,.18);border:1px solid rgba(93,202,165,.35);border-radius:20px;padding:3px 10px;margin-top:4px}
+.htab-tagline{font-size:13px;color:rgba(200,240,220,.85);margin-top:6px;font-style:italic;line-height:1.5}
+.htab-order-btn{display:block;margin:0 20px 16px;padding:12px;background:linear-gradient(135deg,#0F6E56,#1a9d76);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;width:calc(100% - 40px);text-align:center;box-shadow:0 4px 16px rgba(15,110,86,.3)}
+.htab-section{padding:0 20px 20px}
+.htab-section-title{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#5DCAA5;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.htab-section-title::after{content:'';flex:1;height:1px;background:rgba(93,202,165,.25)}
+.health-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.hcard{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px 14px}
+.hcard-icon{font-size:22px;margin-bottom:6px}
+.hcard-label{font-size:10px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:rgba(160,230,200,.7);margin-bottom:3px}
+.hcard-val{font-size:13px;font-weight:600;color:#fff;line-height:1.4}
+.htab-article{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:4px}
+.htab-article p{font-size:14px;color:rgba(210,245,228,.9);line-height:1.75}
+.tip-item{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.07)}
+.tip-item:last-child{border-bottom:none}
+.tip-dot{width:28px;height:28px;border-radius:50%;background:rgba(93,202,165,.2);border:1px solid rgba(93,202,165,.3);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.tip-text{font-size:13px;color:rgba(210,245,228,.85);line-height:1.6;padding-top:4px}
+/* CART FAB */
+.cart-fab{position:fixed;bottom:24px;right:20px;z-index:200;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg,#0F6E56,#1a9d76);color:#fff;border:none;border-radius:28px;padding:13px 20px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 20px rgba(15,110,86,.45);transition:all .25s;transform:translateY(100px);opacity:0}
+.cart-fab.show{transform:translateY(0);opacity:1}
+.cart-fab:hover{transform:scale(1.05)}
+.cart-badge{background:#ff4757;color:#fff;font-size:10px;font-weight:800;min-width:18px;height:18px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;padding:0 4px}
+@keyframes cpulse{0%{transform:scale(1)}50%{transform:scale(1.3)}100%{transform:scale(1)}}
+.cart-badge.pulse{animation:cpulse .35s ease}
+/* CART PANEL */
+.cart-wrap{position:fixed;inset:0;z-index:260;pointer-events:none}
+.cart-wrap.open{pointer-events:all}
+.cart-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.52);opacity:0;transition:opacity .3s;backdrop-filter:blur(3px)}
+.cart-wrap.open .cart-backdrop{opacity:1}
+.cart-panel{position:absolute;bottom:0;left:0;right:0;max-height:91vh;background:#fff;border-radius:24px 24px 0 0;transform:translateY(100%);transition:transform .42s cubic-bezier(.32,.72,0,1);display:flex;flex-direction:column;overflow:hidden}
+.cart-wrap.open .cart-panel{transform:translateY(0)}
+.cart-handle{display:flex;justify-content:center;padding:12px 0 0;cursor:pointer;flex-shrink:0}
+.cart-handle-bar{width:36px;height:4px;background:#e0e0e0;border-radius:2px}
+.cart-header{padding:12px 20px 14px;border-bottom:1px solid #f0f0ec;flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.cart-header h2{font-size:17px;font-weight:700;color:#1a1a1a}
+.cart-step-label{font-size:11px;color:#aaa;margin-top:2px}
+.cart-clear{background:transparent;border:1px solid #f0c0bb;color:#c0392b;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:inherit}
+.cart-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.cart-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:50px 20px;color:#aaa;gap:10px;text-align:center}
+.cart-empty span{font-size:52px}
+.cart-empty p{font-size:14px}
+.cart-item{display:flex;align-items:center;gap:12px;padding:12px 20px;border-bottom:1px solid #f5f5f0}
+.ci-img{width:52px;height:52px;border-radius:10px;overflow:hidden;background:#E1F5EE;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:24px}
+.ci-img img{width:100%;height:100%;object-fit:cover}
+.ci-info{flex:1;min-width:0}
+.ci-name{font-size:13px;font-weight:600;color:#1a1a1a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ci-price{font-size:12px;color:#0F6E56;font-weight:700;margin-top:2px}
+.ci-qty{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.qty-btn{width:28px;height:28px;border-radius:50%;border:1.5px solid #e0e0e0;background:#fff;color:#555;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit;line-height:1}
+.qty-btn:hover{border-color:#0F6E56;color:#0F6E56;background:#f0fbf7}
+.qty-num{font-size:14px;font-weight:700;min-width:20px;text-align:center;color:#1a1a1a}
+.ci-del{background:transparent;border:none;color:#ddd;font-size:18px;cursor:pointer;padding:4px;line-height:1}
+.ci-del:hover{color:#e74c3c}
+.cart-footer{padding:16px 20px;border-top:1px solid #f0f0ec;flex-shrink:0;background:#fff}
+.cart-total-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.cart-total-label{font-size:13px;color:#888}
+.cart-total-val{font-size:22px;font-weight:800;color:#0F6E56}
+.cart-checkout-btn{width:100%;padding:14px;background:linear-gradient(135deg,#0F6E56,#1a9d76);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;box-shadow:0 4px 16px rgba(15,110,86,.3)}
+.cart-checkout-btn:disabled{opacity:.5;cursor:not-allowed}
+/* ORDER STEPS */
+.order-step{display:none;padding:16px 20px}
+.order-step.active{display:block}
+.step-back-btn{background:transparent;border:none;color:#888;font-size:13px;cursor:pointer;font-family:inherit;padding:4px 0;margin-bottom:12px;display:flex;align-items:center;gap:4px}
+.order-summary-box{background:#f8fffe;border:1px solid #E1F5EE;border-radius:12px;padding:12px;margin-bottom:12px;font-size:12px;color:#555;line-height:1.8}
+.order-summary-box strong{color:#0F6E56;font-size:13px;display:block;margin-bottom:4px}
+.order-field-group{margin-bottom:12px}
+.order-field-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.order-input{width:100%;font-size:13px;padding:9px 12px;border:1.5px solid #e0e0e0;border-radius:10px;font-family:inherit;outline:none;color:#1a1a1a}
+.order-input:focus{border-color:#5DCAA5}
+/* QR STEP */
+.payment-header{text-align:center;padding:4px 0 16px}
+.payment-header h4{font-size:16px;font-weight:700;color:#1a1a1a}
+.payment-header p{font-size:12px;color:#888;margin-top:3px}
+.qr-container{background:#f8fffe;border:2px solid #E1F5EE;border-radius:16px;padding:16px;margin-bottom:14px;text-align:center}
+.qr-img-wrap{width:190px;height:190px;margin:0 auto 12px;border-radius:12px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;border:1px solid #e8e8e4}
+.qr-img-wrap img{width:100%;height:100%;object-fit:contain}
+.qr-placeholder{display:flex;flex-direction:column;align-items:center;gap:8px;color:#bbb;padding:20px}
+.qr-placeholder span{font-size:48px}
+.qr-placeholder small{font-size:11px;text-align:center;line-height:1.5}
+.qr-bank-info{font-size:12px;color:#555;line-height:2;text-align:left}
+.qr-bank-info strong{color:#0F6E56;font-weight:700}
+.qr-amount-badge{background:linear-gradient(135deg,#E1F5EE,#d0f0e4);border:1px solid #9FE1CB;border-radius:20px;display:inline-block;padding:7px 20px;margin-top:10px;font-size:17px;font-weight:800;color:#0F6E56}
+.payment-note{background:#fffbee;border:1px solid #ffe08a;border-radius:10px;padding:11px 14px;font-size:12px;color:#7d6000;line-height:1.7;margin-bottom:14px}
+.payment-confirm-btn{width:100%;padding:14px;background:#0F6E56;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-bottom:8px}
+.payment-back-btn{width:100%;padding:10px;background:transparent;border:1px solid #e0e0e0;border-radius:12px;font-size:13px;color:#888;cursor:pointer;font-family:inherit}
+/* SUCCESS */
+.success-wrap{text-align:center;padding:10px 0 8px}
+.success-icon{font-size:60px;margin-bottom:12px;display:block;animation:popIn .5s cubic-bezier(.34,1.56,.64,1)}
+@keyframes popIn{0%{transform:scale(0)}100%{transform:scale(1)}}
+.success-title{font-size:19px;font-weight:800;color:#0F6E56;margin-bottom:6px}
+.success-sub{font-size:13px;color:#888;line-height:1.6;margin-bottom:16px}
+.success-order-card{background:#f0fbf7;border:1px solid #9FE1CB;border-radius:12px;padding:14px;margin-bottom:16px;text-align:left}
+.soc-row{display:flex;justify-content:space-between;font-size:12px;color:#555;line-height:1.9}
+.soc-row strong{color:#0F6E56}
+.success-zalo-btn{width:100%;padding:13px;background:#0068ff;color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;text-decoration:none}
+.success-close-btn{width:100%;padding:11px;background:transparent;border:1px solid #e0e0e0;border-radius:12px;font-size:13px;color:#888;cursor:pointer;font-family:inherit}
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:#0F6E56;color:#fff;padding:9px 22px;border-radius:20px;font-size:13px;font-weight:500;opacity:0;transition:opacity .3s;pointer-events:none;z-index:400;white-space:nowrap}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<div class="hero">
+  <canvas class="hero-canvas" id="heroBg"></canvas>
+  <div class="hero-content">
+    <div class="brand-label">`+B.brand+`</div>
+    <div class="hero-name">`+B.name+`</div>
+    <div class="hero-sub">`+B.sub+`</div>
+    <div class="hero-divider"></div>
+  </div>
+</div>
+<div class="info-bar">
+  <div class="info-item"><div class="info-icon">📞</div><div class="info-text"><strong>`+B.phone+`</strong>Liên hệ đặt hàng</div></div>
+  <div class="info-item"><div class="info-icon">📍</div><div class="info-text"><strong>`+B.place+`</strong>`+B.addr+`</div></div>
+</div>
+<div class="section-label">Thực đơn đặc biệt – Trà trái cây tươi</div>
+<div class="container"><div class="grid" id="g"></div></div>
+<div class="footer"><p>`+B.name+` · `+B.place+` · `+B.phone+`</p></div>
+
+<!-- HEALTH TAB -->
+<div class="htab-wrap" id="htabWrap">
+  <div class="htab-backdrop" onclick="closeHealth()"></div>
+  <div class="htab" id="htab">
+    <div class="htab-bg-layer">
+      <canvas class="htab-bg-canvas" id="htabCanvas"></canvas>
+      <img class="htab-bg-img" id="htabBgImg" src="" alt="" style="display:none">
+    </div>
+    <div class="htab-scroll" id="htabScroll">
+      <div class="htab-handle" onclick="closeHealth()"><div class="htab-handle-bar"></div></div>
+      <div class="htab-hero">
+        <div class="htab-thumb" id="htabThumb"></div>
+        <div>
+          <div class="htab-drink-name" id="htabName"></div>
+          <div class="htab-price-tag" id="htabPrice"></div>
+          <div class="htab-tagline" id="htabTagline"></div>
+        </div>
+      </div>
+      <button class="htab-order-btn" id="htabOrderBtn" onclick="addFromHealth()">🛒 Thêm vào giỏ hàng</button>
+      <div class="htab-section">
+        <div class="htab-section-title">🌿 Lợi ích sức khoẻ</div>
+        <div class="htab-article"><p id="htabContent"></p></div>
+      </div>
+      <div class="htab-section">
+        <div class="htab-section-title">✨ Điểm nổi bật</div>
+        <div class="health-cards" id="htabCards"></div>
+      </div>
+      <div class="htab-section">
+        <div class="htab-section-title">💡 Gợi ý uống</div>
+        <div id="htabTips"></div>
+      </div>
+      <div style="height:32px"></div>
+    </div>
+  </div>
+</div>
+
+<!-- CART FAB -->
+<button class="cart-fab" id="cartFab" onclick="openCart()">
+  🛒 Giỏ hàng &nbsp;<span class="cart-badge" id="cartBadge">0</span>
+</button>
+
+<!-- CART PANEL -->
+<div class="cart-wrap" id="cartWrap">
+  <div class="cart-backdrop" onclick="closeCart()"></div>
+  <div class="cart-panel">
+    <div class="cart-handle" onclick="closeCart()"><div class="cart-handle-bar"></div></div>
+    <div class="cart-header">
+      <div>
+        <h2 id="cartTitle">🛒 Giỏ hàng</h2>
+        <div class="cart-step-label" id="cartStepLabel">Chọn món và đặt hàng</div>
+      </div>
+      <button class="cart-clear" id="cartClearBtn" onclick="clearCart()">Xoá tất cả</button>
+    </div>
+    <div class="cart-body" id="cartBody">
+      <!-- step 1: items -->
+      <div class="order-step active" id="stepItems" style="padding:0"></div>
+      <!-- step 2: info -->
+      <div class="order-step" id="stepInfo">
+        <button class="step-back-btn" onclick="goStep(1)">← Quay lại giỏ hàng</button>
+        <div class="order-summary-box" id="orderSummaryBox"></div>
+        <div class="order-field-group">
+          <div class="order-field-label">Họ và tên *</div>
+          <input class="order-input" type="text" id="custName" placeholder="VD: Nguyễn Văn A">
+        </div>
+        <div class="order-field-group">
+          <div class="order-field-label">Số điện thoại *</div>
+          <input class="order-input" type="tel" id="custPhone" placeholder="VD: 0901234567">
+        </div>
+        <div class="order-field-group">
+          <div class="order-field-label">Ghi chú (tuỳ chọn)</div>
+          <textarea class="order-input" id="custNote" rows="2" placeholder="VD: Ít đường, không đá..."></textarea>
+        </div>
+      </div>
+      <!-- step 3: payment -->
+      <div class="order-step" id="stepPayment">
+        <button class="step-back-btn" onclick="goStep(2)">← Quay lại thông tin</button>
+        <div class="payment-header">
+          <h4>💳 Thanh toán chuyển khoản</h4>
+          <p>Quét mã QR hoặc chuyển khoản thủ công</p>
+        </div>
+        <div class="qr-container">
+          <div class="qr-img-wrap" id="qrImgWrap">
+            <div class="qr-placeholder"><span>📱</span><small>Chưa có mã QR</small></div>
+          </div>
+          <div class="qr-bank-info" id="qrBankInfo"></div>
+          <div class="qr-amount-badge" id="qrAmountBadge">0đ</div>
+        </div>
+        <div class="payment-note">⚠️ Sau khi chuyển khoản, nhấn <strong>"Tôi đã chuyển khoản"</strong> bên dưới. Đơn hàng sẽ được xác nhận sau khi cửa hàng kiểm tra.</div>
+      </div>
+      <!-- step 4: success -->
+      <div class="order-step" id="stepSuccess">
+        <div class="success-wrap">
+          <span class="success-icon">🎉</span>
+          <div class="success-title">Đặt hàng thành công!</div>
+          <div class="success-sub">Đơn hàng đã được gửi đến <strong id="successBrand">`+B.name+`</strong>. Cửa hàng sẽ xác nhận sau khi nhận được thanh toán.</div>
+          <div class="success-order-card" id="successOrderCard"></div>
+          <a class="success-zalo-btn" id="successZaloBtn" href="#" target="_blank">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.84 1.36 5.37 3.5 7.08L4.5 22l4.26-1.38C9.96 21.17 10.96 21.4 12 21.4c5.52 0 10-4.03 10-9.4S17.52 2 12 2z"/></svg>
+            Nhắn Zalo xác nhận đơn
+          </a>
+          <button class="success-close-btn" onclick="closeCart();resetOrder()">Đóng & đặt thêm</button>
+        </div>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter">
+      <div id="footerStep1">
+        <div class="cart-total-row">
+          <span class="cart-total-label">Tổng cộng</span>
+          <span class="cart-total-val" id="cartTotal">0đ</span>
+        </div>
+        <button class="cart-checkout-btn" id="checkoutBtn" onclick="goStep(2)" disabled>Tiếp tục đặt hàng →</button>
+      </div>
+      <div id="footerStep2" style="display:none">
+        <button class="cart-checkout-btn" onclick="goStep(3)">Xem QR thanh toán →</button>
+      </div>
+      <div id="footerStep3" style="display:none">
+        <button class="payment-confirm-btn" onclick="confirmOrder()">✅ Tôi đã chuyển khoản</button>
+        <button class="payment-back-btn" onclick="goStep(2)">← Quay lại</button>
+      </div>
+      <div id="footerStep4" style="display:none"></div>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+var BRAND_NAME='`+B.name+`';
+var BRAND_PHONE='`+B.phone+`';
+var items=JSON.parse(\``+iJ+`\`);
+var imgs=JSON.parse(\``+mJ+`\`);
+var health=JSON.parse(\``+hJ+`\`);
+var bgImgs=JSON.parse(\``+bJ+`\`);
+var QRZ=JSON.parse(\``+qJ+`\`);
+var animId=null,curHealth=null,cart=[],currentStep=1;
+
+// TOAST
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2400);}
+
+// PRICE
+function priceToNum(p){if(!p||p==='--')return 0;var m=p.replace(/\\./g,'').match(/[\\d]+/);if(!m)return 0;var n=parseFloat(m[0]);if(p.toUpperCase().indexOf('K')>-1)n*=1000;return n;}
+function fmtPrice(n){if(n>=1000)return n.toLocaleString('vi-VN')+'đ';return n+'đ';}
+
+// RENDER GRID
+document.getElementById('g').innerHTML=items.map(function(it,i){
+  return '<div class="card" onclick="openH('+i+')"><div class="img-wrap">'
+    +(imgs[i]?'<img src="'+imgs[i]+'" alt="'+it.name+'">'
+    :'<div class="placeholder"><span>'+it.e+'</span><small>Nhấn để xem sức khoẻ</small></div>')
+    +'</div><div class="card-body"><div class="card-name">'+it.name+'</div>'
+    +'<span class="card-price">'+it.price+'</span>'
+    +'<button class="card-order-btn" onclick="event.stopPropagation();addToCartIdx('+i+',event)">+ Đặt</button>'
+    +'</div></div>';
+}).join('');
+
+// ADD TO CART
+function addToCartIdx(i,e){
+  if(e)e.stopPropagation();
+  var it=items[i];
+  var ex=cart.find(function(c){return c.idx===i;});
+  if(ex){ex.qty++;}else{cart.push({idx:i,name:it.name,price:it.price,priceNum:priceToNum(it.price),e:it.e,qty:1});}
+  updateCartUI();
+  var badge=document.getElementById('cartBadge');
+  badge.classList.remove('pulse');void badge.offsetWidth;badge.classList.add('pulse');
+  toast('Đã thêm: '+it.name+' 🛒');
+}
+window.addToCartIdx=addToCartIdx;
+
+function addFromHealth(){
+  if(curHealth===null)return;
+  addToCartIdx(curHealth,null);
+}
+window.addFromHealth=addFromHealth;
+
+function updateCartUI(){
+  var total=cart.reduce(function(s,c){return s+c.qty;},0);
+  document.getElementById('cartBadge').textContent=total;
+  var fab=document.getElementById('cartFab');
+  if(total>0)fab.classList.add('show');else fab.classList.remove('show');
+  if(document.getElementById('cartWrap').classList.contains('open'))renderCartItems();
+  document.getElementById('checkoutBtn').disabled=total===0;
+}
+
+// HEALTH TAB
+function openH(i){
+  curHealth=i;
+  var it=items[i];var h=health[i]||{};
+  var th=document.getElementById('htabThumb');
+  th.innerHTML=imgs[i]?'<img src="'+imgs[i]+'" alt="'+it.name+'">':'<span>'+it.e+'</span>';
+  document.getElementById('htabName').textContent=it.name;
+  document.getElementById('htabPrice').textContent=it.price;
+  document.getElementById('htabTagline').textContent=it.q||'';
+  document.getElementById('htabContent').textContent=h.content||'';
+  var cards=h.cards||[];
+  document.getElementById('htabCards').innerHTML=cards.map(function(c){var p=c.split('|');return'<div class="hcard"><div class="hcard-icon">'+p[0]+'</div><div class="hcard-label">'+p[1]+'</div><div class="hcard-val">'+p[2]+'</div></div>';}).join('');
+  var tips=h.tips||[];
+  document.getElementById('htabTips').innerHTML=tips.map(function(t){var p=t.split('|');return'<div class="tip-item"><div class="tip-dot">'+p[0]+'</div><div class="tip-text"><strong style="color:#9FE1CB">'+p[1]+'</strong><br>'+p[2]+'</div></div>';}).join('');
+  var bg=document.getElementById('htabBgImg');
+  if(bgImgs[i]){bg.src=bgImgs[i];bg.style.display='block';}else{bg.style.display='none';bg.src='';}
+  startAnim();
+  document.getElementById('htabWrap').classList.add('open');
+  document.getElementById('htabScroll').scrollTop=0;
+}
+window.openH=openH;
+function closeHealth(){document.getElementById('htabWrap').classList.remove('open');if(animId){cancelAnimationFrame(animId);animId=null;}}
+window.closeHealth=closeHealth;
+
+// CART
+function openCart(){currentStep=1;renderCartItems();showStep(1);document.getElementById('cartWrap').classList.add('open');}
+function closeCart(){document.getElementById('cartWrap').classList.remove('open');}
+window.openCart=openCart;window.closeCart=closeCart;
+
+function showStep(n){
+  currentStep=n;
+  ['stepItems','stepInfo','stepPayment','stepSuccess'].forEach(function(id,i){
+    var el=document.getElementById(id);
+    el.classList.toggle('active',i===n-1);
+  });
+  ['footerStep1','footerStep2','footerStep3','footerStep4'].forEach(function(id,i){
+    document.getElementById(id).style.display=i===n-1?'block':'none';
+  });
+  var titles=['🛒 Giỏ hàng','📝 Thông tin','💳 Thanh toán','✅ Thành công'];
+  var labels=['Chọn món và đặt hàng','Điền thông tin nhận hàng','Quét mã & chuyển khoản','Đơn đã được ghi nhận'];
+  document.getElementById('cartTitle').textContent=titles[n-1];
+  document.getElementById('cartStepLabel').textContent=labels[n-1];
+  document.getElementById('cartClearBtn').style.display=n===1?'block':'none';
+}
+window.goStep=function(n){
+  if(n===2){if(cart.length===0){toast('Giỏ hàng trống!');return;}renderOrderSummary();}
+  if(n===3){
+    var name=document.getElementById('custName').value.trim();
+    var phone=document.getElementById('custPhone').value.trim();
+    if(!name){toast('Vui lòng nhập họ tên');return;}
+    if(!phone){toast('Vui lòng nhập số điện thoại');return;}
+    renderPaymentStep();
+  }
+  showStep(n);
+  document.getElementById('cartBody').scrollTop=0;
+};
+
+function renderCartItems(){
+  var el=document.getElementById('stepItems');
+  if(cart.length===0){
+    el.innerHTML='<div class="cart-empty"><span>🧺</span><p>Chưa có món nào trong giỏ</p><p style="font-size:11px;color:#bbb">Nhấn "+ Đặt" trên từng món để thêm</p></div>';
+    document.getElementById('cartTotal').textContent='0đ';
+    document.getElementById('checkoutBtn').disabled=true;return;
+  }
+  var total=cart.reduce(function(s,c){return s+c.qty*c.priceNum;},0);
+  el.innerHTML=cart.map(function(c,ci){
+    var imgSrc=imgs[c.idx];
+    return '<div class="cart-item">'
+      +'<div class="ci-img">'+(imgSrc?'<img src="'+imgSrc+'" alt="'+c.name+'">':'<span>'+c.e+'</span>')+'</div>'
+      +'<div class="ci-info"><div class="ci-name">'+c.name+'</div><div class="ci-price">'+c.price+' × '+c.qty+' = '+fmtPrice(c.qty*c.priceNum)+'</div></div>'
+      +'<div class="ci-qty">'
+      +'<button class="qty-btn" onclick="changeQty('+ci+',-1)">−</button>'
+      +'<span class="qty-num">'+c.qty+'</span>'
+      +'<button class="qty-btn" onclick="changeQty('+ci+',1)">+</button>'
+      +'</div>'
+      +'<button class="ci-del" onclick="removeItem('+ci+')" title="Xoá">✕</button>'
+      +'</div>';
+  }).join('');
+  document.getElementById('cartTotal').textContent=fmtPrice(total);
+  document.getElementById('checkoutBtn').disabled=false;
+}
+window.changeQty=function(ci,d){cart[ci].qty+=d;if(cart[ci].qty<=0)cart.splice(ci,1);updateCartUI();renderCartItems();};
+window.removeItem=function(ci){cart.splice(ci,1);updateCartUI();renderCartItems();};
+window.clearCart=function(){if(!confirm('Xoá tất cả món trong giỏ?'))return;cart=[];updateCartUI();renderCartItems();};
+
+function renderOrderSummary(){
+  var total=cart.reduce(function(s,c){return s+c.qty*c.priceNum;},0);
+  var lines=cart.map(function(c){return c.e+' '+c.name+' × '+c.qty;}).join('<br>');
+  document.getElementById('orderSummaryBox').innerHTML='<strong>Tóm tắt đơn hàng</strong>'+lines+'<br><span style="color:#0F6E56;font-weight:700">Tổng: '+fmtPrice(total)+'</span>';
+}
+
+function renderPaymentStep(){
+  var total=cart.reduce(function(s,c){return s+c.qty*c.priceNum;},0);
+  var wrap=document.getElementById('qrImgWrap');
+  if(QRZ.qrImg){wrap.innerHTML='<img src="'+QRZ.qrImg+'" alt="QR">';}
+  else{wrap.innerHTML='<div class="qr-placeholder"><span>📱</span><small>Chưa có mã QR<br>Liên hệ cửa hàng để biết thêm</small></div>';}
+  var custName=document.getElementById('custName').value.trim();
+  var content=(QRZ.bankContent||BRAND_NAME)+' '+custName;
+  var bankHtml='';
+  if(QRZ.bankName)bankHtml+='<div>🏦 Ngân hàng: <strong>'+QRZ.bankName+'</strong></div>';
+  if(QRZ.bankNumber)bankHtml+='<div>💳 Số TK: <strong>'+QRZ.bankNumber+'</strong></div>';
+  if(QRZ.bankOwner)bankHtml+='<div>👤 Chủ TK: <strong>'+QRZ.bankOwner+'</strong></div>';
+  bankHtml+='<div>📝 Nội dung: <strong>'+content+'</strong></div>';
+  document.getElementById('qrBankInfo').innerHTML=bankHtml||'<span style="color:#aaa">Chưa thiết lập thông tin TK</span>';
+  document.getElementById('qrAmountBadge').textContent='💰 '+fmtPrice(total);
+}
+
+function buildZaloMsg(order){
+  var lines=order.items.map(function(c){return'  • '+c.e+' '+c.name+' x'+c.qty+' = '+fmtPrice(c.qty*c.priceNum);}).join('\\n');
+  var sep='─────────────────';
+  return '🛒 ĐƠN HÀNG MỚI - '+BRAND_NAME+'\\n'+sep+'\\n📋 Mã đơn: '+order.code+'\\n👤 Khách: '+order.name+'\\n📞 SĐT: '+order.phone+'\\n⏰ '+order.time+'\\n'+sep+'\\n🧾 Chi tiết:\\n'+lines+'\\n'+sep+'\\n💰 TỔNG: '+fmtPrice(order.total)+(order.note?'\\n📝 Ghi chú: '+order.note:'')+'\\n'+sep+'\\n✅ Khách đã xác nhận chuyển khoản!';
+}
+
+window.confirmOrder=function(){
+  var name=document.getElementById('custName').value.trim();
+  var phone=document.getElementById('custPhone').value.trim();
+  var note=document.getElementById('custNote').value.trim();
+  var total=cart.reduce(function(s,c){return s+c.qty*c.priceNum;},0);
+  var code='RF'+Date.now().toString().slice(-6);
+  var order={code:code,name:name,phone:phone,note:note,total:total,items:cart.map(function(c){return Object.assign({},c);}),time:new Date().toLocaleString('vi-VN')};
+  // render success
+  document.getElementById('successBrand').textContent=BRAND_NAME;
+  var lines=order.items.map(function(c){return c.e+' '+c.name+' × '+c.qty+' = '+fmtPrice(c.qty*c.priceNum);}).join('<br>');
+  document.getElementById('successOrderCard').innerHTML=
+    '<div class="soc-row"><span>📋 Mã đơn:</span><strong>'+code+'</strong></div>'
+    +'<div class="soc-row"><span>👤 Khách:</span><span>'+name+'</span></div>'
+    +'<div class="soc-row"><span>📞 SĐT:</span><span>'+phone+'</span></div>'
+    +'<div style="margin-top:6px;font-size:12px;color:#555;border-top:1px dashed #c0ead6;padding-top:6px">'+lines+'</div>'
+    +'<div class="soc-row" style="margin-top:6px;border-top:1px dashed #c0ead6;padding-top:6px"><span>💰 Tổng:</span><strong>'+fmtPrice(total)+'</strong></div>';
+  var zPhone=(QRZ.zaloPhone||BRAND_PHONE).replace(/\\D/g,'');
+  var msg=encodeURIComponent(buildZaloMsg(order));
+  document.getElementById('successZaloBtn').href='https://zalo.me/'+zPhone+'?message='+msg;
+  showStep(4);
+  // auto open Zalo
+  if(zPhone){window.open('https://zalo.me/'+zPhone+'?message='+msg,'_blank');}
+};
+
+window.resetOrder=function(){cart=[];document.getElementById('custName').value='';document.getElementById('custPhone').value='';document.getElementById('custNote').value='';updateCartUI();};
+
+// htab animation
+function startAnim(){
+  if(animId){cancelAnimationFrame(animId);animId=null;}
+  var cv=document.getElementById('htabCanvas');var ctx=cv.getContext('2d');
+  var htab=document.getElementById('htab');var W,H,t=0;
+  var FR=['🍑','🍓','🍋','🥭','🍏','🥝','🍊','🍇','🥥','🌿','✨','💧'];
+  var ps=[];
+  function rsz(){W=cv.width=htab.offsetWidth||360;H=cv.height=htab.offsetHeight||600;}
+  function mkF(){return{type:'f',x:Math.random()*W,y:H+20,sz:12+Math.random()*16,sp:.3+Math.random()*.6,rt:Math.random()*6.28,rS:(Math.random()-.5)*.025,wb:Math.random()*6.28,wS:.012+Math.random()*.012,al:.3+Math.random()*.4,f:FR[Math.floor(Math.random()*FR.length)]};}
+  function mkB(){return{type:'b',x:Math.random()*W,y:H+20,r:6+Math.random()*12,sp:.3+Math.random()*.5,wb:Math.random()*6.28,wS:.015+Math.random()*.02,al:.06+Math.random()*.08};}
+  for(var i=0;i<10;i++){var p=mkF();p.y=Math.random()*400;ps.push(p);}
+  for(var i=0;i<12;i++){var b=mkB();b.y=Math.random()*400;ps.push(b);}
+  function wv(yb,amp,fr,ph,c){ctx.beginPath();ctx.moveTo(0,H);for(var x=0;x<=W;x+=3)ctx.lineTo(x,yb+Math.sin(x*fr+ph)*amp+Math.sin(x*fr*.5+ph*1.2)*amp*.3);ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=c;ctx.fill();}
+  function frame(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#052918';ctx.fillRect(0,0,W,H);
+    [[.2,.06],[.55,.04],[.8,.05]].forEach(function(r){var g=ctx.createLinearGradient(W*r[0],0,W*r[0],H);g.addColorStop(0,'rgba(70,200,120,'+r[1]+')');g.addColorStop(1,'rgba(70,200,120,0)');ctx.beginPath();ctx.moveTo(W*r[0]-20,0);ctx.lineTo(W*r[0]+20,0);ctx.lineTo(W*r[0]+50,H);ctx.lineTo(W*r[0]-50,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();});
+    wv(H*.55,8,.022,t*.8,'rgba(12,100,75,.45)');wv(H*.65,6,.028,t+1,'rgba(16,120,88,.35)');wv(H*.75,5,.034,t*1.2+2,'rgba(22,145,105,.25)');
+    ctx.save();
+    ps.forEach(function(p,idx){
+      if(p.type==='f'){p.y-=p.sp;p.rt+=p.rS;p.wb+=p.wS;var lx=p.x+Math.sin(p.wb)*18;ctx.save();ctx.globalAlpha=p.al;ctx.translate(lx,p.y);ctx.rotate(p.rt);ctx.font=p.sz+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(p.f,0,0);ctx.restore();if(p.y<-30)ps[idx]=mkF();}
+      else{p.y-=p.sp;p.wb+=p.wS;var bx=p.x+Math.sin(p.wb)*12;ctx.beginPath();ctx.arc(bx,p.y,p.r,0,6.28);ctx.strokeStyle='rgba(140,230,190,'+p.al+')';ctx.lineWidth=1;ctx.stroke();if(p.y<-20)ps[idx]=mkB();}
+    });
+    ctx.restore();t+=.016;animId=requestAnimationFrame(frame);
+  }
+  rsz();frame();
+}
+
+// hero animation
+(function(){
+  var cv=document.getElementById('heroBg');if(!cv)return;
+  var ctx=cv.getContext('2d'),W,H,t=0;
+  var FR=['🍑','🍓','🍋','🥭','🍏','🥝','🍊','🍇','🥥'];
+  var bu=[],le=[];
+  function rsz(){var h=cv.parentElement;W=cv.width=h.offsetWidth;H=cv.height=h.offsetHeight||210;}
+  function mkB(){return{x:Math.random()*W,y:H+30,r:10+Math.random()*18,sp:.4+Math.random()*.7,wb:Math.random()*6.28,wS:.02+Math.random()*.02,al:.12+Math.random()*.13};}
+  function mkL(){return{x:Math.random()*W,y:H+40,sz:18+Math.random()*22,sp:.5+Math.random()*.8,rt:Math.random()*6.28,rS:(Math.random()-.5)*.03,wb:Math.random()*6.28,wS:.015+Math.random()*.015,al:.55+Math.random()*.35,f:FR[Math.floor(Math.random()*FR.length)]};}
+  for(var i=0;i<8;i++){var b=mkB();b.y=Math.random()*200;bu.push(b);}
+  for(var i=0;i<5;i++){var l=mkL();l.y=Math.random()*200;le.push(l);}
+  function wv(yb,amp,fr,ph,c){ctx.beginPath();ctx.moveTo(0,H);for(var x=0;x<=W;x+=4)ctx.lineTo(x,yb+Math.sin(x*fr+ph)*amp+Math.sin(x*fr*.6+ph*1.3)*amp*.4);ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=c;ctx.fill();}
+  function frame(){ctx.clearRect(0,0,W,H);ctx.fillStyle='#073d28';ctx.fillRect(0,0,W,H);
+    [[.15,.07],[.4,.05],[.72,.06],[.9,.04]].forEach(function(r){var g=ctx.createLinearGradient(W*r[0],0,W*r[0],H);g.addColorStop(0,'rgba(80,210,130,'+r[1]+')');g.addColorStop(1,'rgba(80,210,130,0)');ctx.beginPath();ctx.moveTo(W*r[0]-30,0);ctx.lineTo(W*r[0]+30,0);ctx.lineTo(W*r[0]+60,H);ctx.lineTo(W*r[0]-60,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();});
+    wv(H*.62,10,.018,t*.7,'rgba(14,110,86,.5)');wv(H*.70,8,.022,t*.9+1,'rgba(18,130,100,.4)');wv(H*.78,7,.026,t*1.1+2,'rgba(24,155,115,.3)');wv(H*.84,5,.03,t*1.3+3,'rgba(32,175,130,.2)');
+    bu.forEach(function(b,i){b.y-=b.sp;b.wb+=b.wS;var bx=b.x+Math.sin(b.wb)*14;ctx.beginPath();ctx.arc(bx,b.y,b.r,0,6.28);ctx.strokeStyle='rgba(160,240,200,'+b.al+')';ctx.lineWidth=1.2;ctx.stroke();ctx.beginPath();ctx.arc(bx-b.r*.28,b.y-b.r*.28,b.r*.22,0,6.28);ctx.fillStyle='rgba(200,255,230,'+(b.al*.7)+')';ctx.fill();if(b.y<-40)bu[i]=mkB();});
+    ctx.save();le.forEach(function(l,i){l.y-=l.sp;l.rt+=l.rS;l.wb+=l.wS;var lx=l.x+Math.sin(l.wb)*20;ctx.save();ctx.globalAlpha=l.al;ctx.translate(lx,l.y);ctx.rotate(l.rt);ctx.font=l.sz+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.f,0,0);ctx.restore();if(l.y<-50)le[i]=mkL();});ctx.restore();
+    t+=.016;requestAnimationFrame(frame);}
+  rsz();window.addEventListener('resize',rsz);frame();
+})();
+
+})();
+<\/script>
+</body></html>`;
+}
+
+/* ===== HERO ANIMATION ===== */
+(function(){
+  const cv=document.getElementById('heroBg');if(!cv)return;
+  const ctx=cv.getContext('2d');let W,H,t=0;
+  const FR=['🍑','🍓','🍋','🥭','🍏','🥝','🍊','🍇','🥥'];
+  const bu=[],le=[];
+  function rsz(){const h=cv.parentElement;W=cv.width=h.offsetWidth;H=cv.height=h.offsetHeight||210;}
+  function mkB(){return{x:Math.random()*W,y:H+30,r:10+Math.random()*18,sp:.4+Math.random()*.7,wb:Math.random()*6.28,wS:.02+Math.random()*.02,al:.12+Math.random()*.13};}
+  function mkL(){return{x:Math.random()*W,y:H+40,sz:18+Math.random()*22,sp:.5+Math.random()*.8,rt:Math.random()*6.28,rS:(Math.random()-.5)*.03,wb:Math.random()*6.28,wS:.015+Math.random()*.015,al:.55+Math.random()*.35,f:FR[Math.floor(Math.random()*FR.length)]};}
+  for(let i=0;i<8;i++){const b=mkB();b.y=Math.random()*200;bu.push(b);}
+  for(let i=0;i<5;i++){const l=mkL();l.y=Math.random()*200;le.push(l);}
+  function wv(yb,amp,fr,ph,c){ctx.beginPath();ctx.moveTo(0,H);for(let x=0;x<=W;x+=4)ctx.lineTo(x,yb+Math.sin(x*fr+ph)*amp+Math.sin(x*fr*.6+ph*1.3)*amp*.4);ctx.lineTo(W,H);ctx.closePath();ctx.fillStyle=c;ctx.fill();}
+  function frame(){
+    ctx.clearRect(0,0,W,H);ctx.fillStyle='#073d28';ctx.fillRect(0,0,W,H);
+    [[.15,.07],[.4,.05],[.72,.06],[.9,.04]].forEach(([px,a])=>{const g=ctx.createLinearGradient(W*px,0,W*px,H);g.addColorStop(0,'rgba(80,210,130,'+a+')');g.addColorStop(1,'rgba(80,210,130,0)');ctx.beginPath();ctx.moveTo(W*px-30,0);ctx.lineTo(W*px+30,0);ctx.lineTo(W*px+60,H);ctx.lineTo(W*px-60,H);ctx.closePath();ctx.fillStyle=g;ctx.fill();});
+    wv(H*.62,10,.018,t*.7,'rgba(14,110,86,.5)');wv(H*.70,8,.022,t*.9+1,'rgba(18,130,100,.4)');wv(H*.78,7,.026,t*1.1+2,'rgba(24,155,115,.3)');wv(H*.84,5,.03,t*1.3+3,'rgba(32,175,130,.2)');
+    bu.forEach((b,i)=>{b.y-=b.sp;b.wb+=b.wS;const bx=b.x+Math.sin(b.wb)*14;ctx.beginPath();ctx.arc(bx,b.y,b.r,0,6.28);ctx.strokeStyle='rgba(160,240,200,'+b.al+')';ctx.lineWidth=1.2;ctx.stroke();ctx.beginPath();ctx.arc(bx-b.r*.28,b.y-b.r*.28,b.r*.22,0,6.28);ctx.fillStyle='rgba(200,255,230,'+(b.al*.7)+')';ctx.fill();if(b.y<-40)bu[i]=mkB();});
+    ctx.save();le.forEach((l,i)=>{l.y-=l.sp;l.rt+=l.rS;l.wb+=l.wS;const lx=l.x+Math.sin(l.wb)*20;ctx.save();ctx.globalAlpha=l.al;ctx.translate(lx,l.y);ctx.rotate(l.rt);ctx.font=l.sz+'px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(l.f,0,0);ctx.restore();if(l.y<-50)le[i]=mkL();});ctx.restore();
+    t+=.016;requestAnimationFrame(frame);
+  }
+  rsz();window.addEventListener('resize',rsz);frame();
+})();
+
+load();renderBrand();render();
+
+// ===== CART & ORDER SYSTEM =====
+const KEY_ORDERS='rf_orders_v1', KEY_QRZALO='rf_qrzalo_v1';
+let cart=[];
+let currentStep=1;
+let pendingOrder=null;
+let ordersFilter='all';
+
+let QRZ={qrImg:'',bankName:'',bankNumber:'',bankOwner:'',bankContent:'REY FRUIT',zaloPhone:'',zaloMsg:''};
+let ORDERS=[];
+
+function loadQRZ(){try{const d=localStorage.getItem(KEY_QRZALO);if(d)QRZ={...QRZ,...JSON.parse(d)};}catch(e){}}
+function saveQRZ(){try{localStorage.setItem(KEY_QRZALO,JSON.stringify(QRZ));}catch(e){}}
+function loadOrders(){try{const d=localStorage.getItem(KEY_ORDERS);ORDERS=d?JSON.parse(d):[];}catch(e){ORDERS=[];}}
+function saveOrders(){try{localStorage.setItem(KEY_ORDERS,JSON.stringify(ORDERS));}catch(e){}}
+loadQRZ();loadOrders();updateOrdersBadge();
+
+function priceToNum(p){
+  if(!p||p==='--')return 0;
+  const m=p.replace(/\./g,'').replace(/,/g,'.').match(/[\d.]+/);
+  if(!m)return 0;
+  let n=parseFloat(m[0]);
+  if(p.toUpperCase().includes('K'))n*=1000;
+  return n;
+}
+function fmtPrice(n){
+  if(n>=1000)return n.toLocaleString('vi-VN')+'đ';
+  return n+'đ';
+}
+
+function addToCart(i,e){
+  e.stopPropagation();
+  const it=ITEMS[i];
+  const existing=cart.find(c=>c.idx===i);
+  if(existing){existing.qty++;}
+  else{cart.push({idx:i,name:it.name,price:it.price,priceNum:priceToNum(it.price),e:it.e,qty:1});}
+  updateCartUI();
+  const badge=document.getElementById('cartBadge');
+  badge.classList.remove('pulse');
+  void badge.offsetWidth;
+  badge.classList.add('pulse');
+  toast('Đã thêm: '+it.name+' 🛒');
+}
+
+function updateCartUI(){
+  const total=cart.reduce((s,c)=>s+c.qty,0);
+  document.getElementById('cartBadge').textContent=total;
+  const fab=document.getElementById('cartFab');
+  if(total>0)fab.classList.add('show');else fab.classList.remove('show');
+  if(document.getElementById('cartWrap').classList.contains('open'))renderCartItems();
+  const btn=document.getElementById('checkoutBtn');
+  if(btn)btn.disabled=total===0;
+}
+
+function openCart(){
+  currentStep=1;
+  renderCartItems();
+  showStep(1);
+  document.getElementById('cartWrap').classList.add('open');
+}
+function closeCart(){document.getElementById('cartWrap').classList.remove('open');}
+
+function showStep(n){
+  currentStep=n;
+  document.querySelectorAll('.order-step').forEach(el=>el.classList.remove('active'));
+  const steps=['stepItems','stepInfo','stepPayment','stepSuccess'];
+  if(steps[n-1])document.getElementById(steps[n-1]).classList.add('active');
+  ['footerStep1','footerStep2','footerStep3','footerStep4'].forEach((id,i)=>{
+    document.getElementById(id).style.display=i===n-1?'block':'none';
+  });
+  const titles=['🛒 Giỏ hàng','📝 Thông tin','💳 Thanh toán','✅ Thành công'];
+  const labels=['Chọn món và đặt hàng','Điền thông tin nhận hàng','Quét mã & chuyển khoản','Đơn đã được ghi nhận'];
+  document.getElementById('cartTitle').textContent=titles[n-1]||'';
+  document.getElementById('cartStepLabel').textContent=labels[n-1]||'';
+  document.getElementById('cartClearBtn').style.display=n===1?'block':'none';
+}
+
+function goStep(n){
+  if(n===2){if(cart.length===0){toast('Giỏ hàng trống!');return;}renderOrderSummary();}
+  if(n===3){
+    const name=document.getElementById('custName').value.trim();
+    const phone=document.getElementById('custPhone').value.trim();
+    if(!name){toast('Vui lòng nhập họ tên');return;}
+    if(!phone){toast('Vui lòng nhập số điện thoại');return;}
+    renderPaymentStep();
+  }
+  showStep(n);
+  document.getElementById('cartBody').scrollTop=0;
+}
+
+function submitToPayment(){goStep(3);}
+
+function renderCartItems(){
+  const el=document.getElementById('stepItems');
+  if(cart.length===0){
+    el.innerHTML=`<div class="cart-empty"><span>🧺</span><p>Chưa có món nào trong giỏ</p><p style="font-size:11px">Nhấn "+ Đặt" trên từng món để thêm vào giỏ</p></div>`;
+    document.getElementById('cartTotal').textContent='0đ';
+    document.getElementById('checkoutBtn').disabled=true;
+    return;
+  }
+  const total=cart.reduce((s,c)=>s+c.qty*c.priceNum,0);
+  el.innerHTML=cart.map((c,ci)=>{
+    const imgSrc=imgs[c.idx];
+    return `<div class="cart-item">
+      <div class="ci-img">${imgSrc?`<img src="${imgSrc}" alt="${c.name}">`:`<span>${c.e}</span>`}</div>
+      <div class="ci-info">
+        <div class="ci-name">${c.name}</div>
+        <div class="ci-price">${c.price} × ${c.qty} = ${fmtPrice(c.qty*c.priceNum)}</div>
+      </div>
+      <div class="ci-qty">
+        <button class="qty-btn" onclick="changeQty(${ci},-1)">−</button>
+        <span class="qty-num">${c.qty}</span>
+        <button class="qty-btn" onclick="changeQty(${ci},1)">+</button>
+      </div>
+      <button class="ci-del" onclick="removeCartItem(${ci})" title="Xoá">✕</button>
+    </div>`;
+  }).join('');
+  document.getElementById('cartTotal').textContent=fmtPrice(total);
+  document.getElementById('checkoutBtn').disabled=false;
+}
+
+function changeQty(ci,delta){
+  cart[ci].qty+=delta;
+  if(cart[ci].qty<=0)cart.splice(ci,1);
+  updateCartUI();
+  renderCartItems();
+}
+function removeCartItem(ci){
+  cart.splice(ci,1);
+  updateCartUI();
+  renderCartItems();
+}
+function clearCart(){
+  if(!confirm('Xoá tất cả món trong giỏ?'))return;
+  cart=[];updateCartUI();renderCartItems();
+}
+
+function renderOrderSummary(){
+  const total=cart.reduce((s,c)=>s+c.qty*c.priceNum,0);
+  const lines=cart.map(c=>`${c.e} ${c.name} × ${c.qty}`).join('<br>');
+  document.getElementById('orderSummaryBox').innerHTML=`<strong>Tóm tắt đơn hàng</strong><br>${lines}<br><span style="color:#0F6E56;font-weight:700">Tổng: ${fmtPrice(total)}</span>`;
+}
+
+function renderPaymentStep(){
+  const total=cart.reduce((s,c)=>s+c.qty*c.priceNum,0);
+  const wrap=document.getElementById('qrImgWrap');
+  if(QRZ.qrImg){wrap.innerHTML=`<img src="${QRZ.qrImg}" alt="QR">`;}
+  else{wrap.innerHTML=`<div class="qr-placeholder"><span>📱</span><small>Chưa có mã QR<br>Admin cần thiết lập trong<br>"💳 QR & Zalo"</small></div>`;}
+  const custName=document.getElementById('custName').value.trim();
+  const content=(QRZ.bankContent||'REY FRUIT')+' '+custName;
+  let bankHtml='';
+  if(QRZ.bankName) bankHtml+=`<div>🏦 Ngân hàng: <strong>${QRZ.bankName}</strong></div>`;
+  if(QRZ.bankNumber) bankHtml+=`<div>💳 Số TK: <strong>${QRZ.bankNumber}</strong></div>`;
+  if(QRZ.bankOwner) bankHtml+=`<div>👤 Chủ TK: <strong>${QRZ.bankOwner}</strong></div>`;
+  if(content) bankHtml+=`<div>📝 Nội dung: <strong>${content}</strong></div>`;
+  document.getElementById('qrBankInfo').innerHTML=bankHtml||'<span style="color:#aaa">Chưa thiết lập thông tin TK</span>';
+  document.getElementById('qrAmountBadge').textContent='💰 '+fmtPrice(total);
+}
+
+function buildZaloMsg(order){
+  const lines=order.items.map(c=>`  • ${c.e} ${c.name} x${c.qty} = ${fmtPrice(c.qty*c.priceNum)}`).join('\n');
+  const sep='─────────────────';
+  return `🛒 ĐƠN HÀNG MỚI - ${BRAND.name}\n${sep}\n📋 Mã đơn: ${order.code}\n👤 Khách: ${order.name}\n📞 SĐT: ${order.phone}\n⏰ Thời gian: ${order.time}\n${sep}\n🧾 Chi tiết đơn:\n${lines}\n${sep}\n💰 TỔNG CỘNG: ${fmtPrice(order.total)}\n${order.note?'📝 Ghi chú: '+order.note+'\n':''}${sep}\n✅ Khách đã xác nhận chuyển khoản. Vui lòng kiểm tra và xác nhận đơn!`;
+}
+
+function buildZaloMsgConfirm(order){
+  const lines=order.items.map(c=>`  • ${c.e} ${c.name} x${c.qty}`).join('\n');
+  const custom=QRZ.zaloMsg||`Đơn hàng của bạn đã được xác nhận! Cảm ơn bạn đã ủng hộ ${BRAND.name} 🌿`;
+  return `✅ XÁC NHẬN ĐƠN HÀNG\n─────────────────\n📋 Mã đơn: ${order.code}\n👤 ${order.name}\n─────────────────\n${lines}\n─────────────────\n💰 Tổng: ${fmtPrice(order.total)}\n─────────────────\n${custom}\n📞 Liên hệ: ${BRAND.phone}`;
+}
+
+function confirmOrder(){
+  const name=document.getElementById('custName').value.trim();
+  const phone=document.getElementById('custPhone').value.trim();
+  const note=document.getElementById('custNote').value.trim();
+  const total=cart.reduce((s,c)=>s+c.qty*c.priceNum,0);
+  const code='RF'+Date.now().toString().slice(-6);
+  const order={
+    code,name,phone,note,total,
+    items:cart.map(c=>({...c})),
+    status:'pending',
+    time:new Date().toLocaleString('vi-VN')
+  };
+  ORDERS.unshift(order);
+  saveOrders();updateOrdersBadge();
+  pendingOrder=order;
+  renderSuccessStep(order);
+  showStep(4);
+  const zPhone=(QRZ.zaloPhone||BRAND.phone).replace(/\D/g,'');
+  if(zPhone){
+    const msg=encodeURIComponent(buildZaloMsg(order));
+    window.open(`https://zalo.me/${zPhone}?message=${msg}`,'_blank');
+  }
+}
+
+function renderSuccessStep(order){
+  document.getElementById('successBrand').textContent=BRAND.name;
+  const lines=order.items.map(c=>`${c.e} ${c.name} × ${c.qty} = ${fmtPrice(c.qty*c.priceNum)}`).join('<br>');
+  document.getElementById('successOrderCard').innerHTML=`
+    <div class="soc-row"><span>📋 Mã đơn:</span><strong>${order.code}</strong></div>
+    <div class="soc-row"><span>👤 Khách:</span><span>${order.name}</span></div>
+    <div class="soc-row"><span>📞 SĐT:</span><span>${order.phone}</span></div>
+    <div style="margin-top:6px;font-size:12px;color:#555;border-top:1px dashed #c0ead6;padding-top:6px">${lines}</div>
+    <div class="soc-row" style="margin-top:6px;border-top:1px dashed #c0ead6;padding-top:6px"><span>💰 Tổng:</span><strong>${fmtPrice(order.total)}</strong></div>
+  `;
+  const custMsg=encodeURIComponent(`Xin chào ${BRAND.name}! Mã đơn của tôi là ${order.code}. Tôi muốn hỏi thêm về đơn hàng.`);
+  const zPhone=(QRZ.zaloPhone||BRAND.phone).replace(/\D/g,'');
+  document.getElementById('successZaloBtn').href=`https://zalo.me/${zPhone}?message=${custMsg}`;
+}
+
+function resetOrder(){
+  cart=[];
+  pendingOrder=null;
+  document.getElementById('custName').value='';
+  document.getElementById('custPhone').value='';
+  document.getElementById('custNote').value='';
+  updateCartUI();
+}
+
+// ===== QR & ZALO MODAL =====
+function openQrZaloModal(){
+  document.getElementById('bankName').value=QRZ.bankName||'';
+  document.getElementById('bankNumber').value=QRZ.bankNumber||'';
+  document.getElementById('bankOwner').value=QRZ.bankOwner||'';
+  document.getElementById('bankContent').value=QRZ.bankContent||'REY FRUIT';
+  document.getElementById('zaloPhone').value=QRZ.zaloPhone||BRAND.phone||'';
+  document.getElementById('zaloMsgTemplate').value=QRZ.zaloMsg||'';
+  document.getElementById('qrUrlInput').value='';
+  const prev=document.getElementById('qrAdminPreview');
+  if(QRZ.qrImg){prev.innerHTML=`<img src="${QRZ.qrImg}" alt="QR">`;}
+  else{prev.innerHTML='📱';}
+  document.getElementById('overlayQrZalo').classList.add('open');
+}
+function closeQrZaloModal(){document.getElementById('overlayQrZalo').classList.remove('open');}
+function saveQrZalo(){
+  QRZ.bankName=document.getElementById('bankName').value.trim();
+  QRZ.bankNumber=document.getElementById('bankNumber').value.trim();
+  QRZ.bankOwner=document.getElementById('bankOwner').value.trim();
+  QRZ.bankContent=document.getElementById('bankContent').value.trim()||'REY FRUIT';
+  QRZ.zaloPhone=document.getElementById('zaloPhone').value.trim();
+  QRZ.zaloMsg=document.getElementById('zaloMsgTemplate').value.trim();
+  saveQRZ();closeQrZaloModal();toast('Đã lưu cài đặt QR & Zalo ✓');
+}
+function applyQrUrl(){
+  const u=document.getElementById('qrUrlInput').value.trim();
+  if(!u)return;
+  QRZ.qrImg=u;
+  document.getElementById('qrAdminPreview').innerHTML=`<img src="${u}" alt="QR">`;
+  toast('Đã cập nhật ảnh QR');
+}
+document.getElementById('overlayQrZalo').addEventListener('click',e=>{if(e.target===e.currentTarget)closeQrZaloModal();});
+document.getElementById('qrFi').addEventListener('change',function(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    QRZ.qrImg=ev.target.result;
+    document.getElementById('qrAdminPreview').innerHTML=`<img src="${ev.target.result}" alt="QR">`;
+    toast('Đã tải ảnh QR ✓');
+  };
+  r.readAsDataURL(f);this.value='';
+});
+
+// ===== ORDERS MANAGEMENT =====
+function updateOrdersBadge(){
+  const pending=ORDERS.filter(o=>o.status==='pending').length;
+  const badge=document.getElementById('ordersBadge');
+  if(badge){
+    badge.textContent=pending;
+    badge.style.display=pending>0?'inline-flex':'none';
+  }
+}
+function openOrdersModal(){
+  ordersFilter='all';
+  document.querySelectorAll('.otab').forEach((t,i)=>t.classList.toggle('active',i===0));
+  renderOrdersList();
+  document.getElementById('overlayOrders').classList.add('open');
+}
+function closeOrdersModal(){document.getElementById('overlayOrders').classList.remove('open');}
+function filterOrders(f,el){
+  ordersFilter=f;
+  document.querySelectorAll('.otab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderOrdersList();
+}
+function renderOrdersList(){
+  const list=document.getElementById('ordersList');
+  const filtered=ordersFilter==='all'?ORDERS:ORDERS.filter(o=>o.status===ordersFilter);
+  if(!filtered.length){
+    list.innerHTML=`<div class="orders-empty"><span>📭</span>Chưa có đơn hàng nào</div>`;
+    return;
+  }
+  list.innerHTML=filtered.map(o=>{
+    const lines=o.items.map(c=>`${c.e} ${c.name} × ${c.qty} = ${fmtPrice(c.qty*c.priceNum)}`).join('<br>');
+    const statusMap={pending:'⏳ Chờ xác nhận',confirmed:'✅ Đã xác nhận',cancelled:'❌ Đã huỷ'};
+    const clsMap={pending:'pending',confirmed:'confirmed',cancelled:'cancelled'};
+    const zPhone=o.phone.replace(/\D/g,'');
+    const zMsgConfirm=encodeURIComponent(buildZaloMsgConfirm(o));
+    return `<div class="order-card ${clsMap[o.status]||''}">
+      <div class="oc-header">
+        <span class="oc-code">${o.code}</span>
+        <span class="status-badge ${clsMap[o.status]||''}">${statusMap[o.status]||o.status}</span>
+        <span class="oc-time">${o.time}</span>
+      </div>
+      <div class="oc-customer">${o.name}</div>
+      <div class="oc-phone">📞 ${o.phone}</div>
+      <div class="oc-items">${lines}</div>
+      <div class="oc-total">💰 Tổng: ${fmtPrice(o.total)}</div>
+      ${o.note?`<div class="oc-note">📝 ${o.note}</div>`:''}
+      <div class="oc-actions">
+        ${o.status==='pending'?`<button class="oc-btn confirm" onclick="confirmOrderAdmin('${o.code}')">✅ Xác nhận + Zalo</button>`:''}
+        ${o.status==='pending'?`<button class="oc-btn cancel" onclick="cancelOrderAdmin('${o.code}')">❌ Huỷ</button>`:''}
+        <a class="oc-btn zalo" href="https://zalo.me/${zPhone}?message=${zMsgConfirm}" target="_blank">💬 Nhắn Zalo</a>
+        <button class="oc-btn del" onclick="deleteOrder('${o.code}')">🗑</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function confirmOrderAdmin(code){
+  const o=ORDERS.find(x=>x.code===code);
+  if(!o)return;
+  o.status='confirmed';
+  saveOrders();updateOrdersBadge();renderOrdersList();
+  const zPhone=o.phone.replace(/\D/g,'');
+  const msg=encodeURIComponent(buildZaloMsgConfirm(o));
+  window.open(`https://zalo.me/${zPhone}?message=${msg}`,'_blank');
+  toast('✅ Đã xác nhận & mở Zalo nhắn khách!');
+}
+function cancelOrderAdmin(code){
+  if(!confirm('Huỷ đơn '+code+'?'))return;
+  const o=ORDERS.find(x=>x.code===code);
+  if(o){o.status='cancelled';saveOrders();updateOrdersBadge();renderOrdersList();}
+  toast('Đã huỷ đơn '+code);
+}
+function deleteOrder(code){
+  if(!confirm('Xoá đơn '+code+' khỏi danh sách?'))return;
+  const i=ORDERS.findIndex(x=>x.code===code);
+  if(i>-1){ORDERS.splice(i,1);saveOrders();updateOrdersBadge();renderOrdersList();}
+}
+function clearAllOrders(){
+  if(!confirm('Xoá tất cả đơn hàng? Không thể hoàn tác!'))return;
+  ORDERS=[];saveOrders();updateOrdersBadge();renderOrdersList();toast('Đã xoá tất cả đơn hàng');
+}
+document.getElementById('overlayOrders').addEventListener('click',e=>{if(e.target===e.currentTarget)closeOrdersModal();});
+</script>
+</body>
+</html>
